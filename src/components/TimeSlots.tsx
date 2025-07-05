@@ -5,17 +5,18 @@ import slotsData from "@/data/slots.json";
 export function TimeSlots() {
     const slotTypes = Object.keys(slotsData)
 
-    function HHMM_ToMinutes(timeStr: string): number {
+    function HHMM_ToMinutes(timeStr) {
         const [hours, minutes] = timeStr.split(':').map(Number);
         return hours * 60 + minutes;
     }
-    function scaleWidth(numberInHHMM: string, inMinHHMM: string, inMaxHHMM: string, outMinPerc: string, outMaxPerc: string) {
+    function scaleWidth(numberInHHMM, inMinHHMM, inMaxHHMM, outMinPerc, outMaxPerc) {
         let number = HHMM_ToMinutes(numberInHHMM);
         let inMin = HHMM_ToMinutes(inMinHHMM); let inMax = HHMM_ToMinutes(inMaxHHMM);
         let outMin = parseInt(outMinPerc.replace("%", "").trim());
         let outMax = parseInt(outMaxPerc.replace("%", "").trim());
         return (number - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
     }
+
 
     let DayStart = "23:59"
     let DayEnd = "00:00"

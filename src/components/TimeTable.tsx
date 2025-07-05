@@ -41,7 +41,7 @@ export default function TimeTable() {
                                             <Fragment key={`${day}-${Day}-${courseAbbr}-inner`}>
                                                 {Object.entries(DayInfo).map(([slotType, slotNums]) =>
                                                     slotNums.map((slot) => {
-                                                        const StartEndTime = slotsData[slotType][slot];
+                                                        const StartEndTime = (slotsData as any)[slotType][slot];
                                                         const startPos = scaleWidth(StartEndTime[0], DayStart, DayEnd, "0%", "100%") / 100 * 640 * 0.87;
                                                         const endPos = scaleWidth(StartEndTime[1], DayStart, DayEnd, "0%", "100%") / 100 * 640 * 0.868;
                                                         return (
