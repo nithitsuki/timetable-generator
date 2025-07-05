@@ -45,7 +45,7 @@ export function TimeSlots() {
                                     className='text-sm p-0 max-h-(--subject-cell-height)'
                                     style={{
                                         position: 'absolute',
-                                        left: `${scaleWidth(StartEndTime[0], DayStart, DayEnd, "0%", "100%") / 100 * 640 * 0.87}px`,
+                                        left: `${scaleWidth(StartEndTime[0], DayStart, DayEnd, "0%", "100%") / 100 * 640 * 0.868}px`,
                                         width: `${scaleWidth(StartEndTime[1], DayStart, DayEnd, "0%", "100%") / 100 * 640 * 0.87 - scaleWidth(StartEndTime[0], DayStart, DayEnd, "0%", "100%") / 100 * 640 * 0.87}px`,
                                         padding: '0rem',
                                         backgroundColor: (type === "lab" ? "var(--slot-yellow)" : "var(--slot-green)"),

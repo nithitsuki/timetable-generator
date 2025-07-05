@@ -30,7 +30,7 @@ export default function TimeTable() {
         <>
             {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].map((day, id) => (
                 <div key={day} id={day} className=' min-h-(--time-slot-height) flex flex-row  border-solid' style={{ padding: '0px', borderLeft: '1px solid var(--foreground)',borderBottom: '1px solid var(--foreground)' }}>
-                    <MyCell className="min-w-(--slot-name) max-w-(--slot-name) text-(--sidebar-accent-foreground) bg-(--sidebar-accent)" >{day.slice(0, 3)}</MyCell>
+                    <MyCell className="min-w-(--slot-name) max-w-(--slot-name)  bg-(--sidebar-accent)" >{day.slice(0, 3)}</MyCell>
                     {/* style={{ backgroundColor: `hsl(${30 * id }, 40%, 56%)` }}  for colored days */}
                     <div className='relative '>
                         {Object.entries(TimetableData).map(([courseAbbr, InfoObj]) => (
@@ -43,7 +43,7 @@ export default function TimeTable() {
                                                     slotNums.map((slot) => {
                                                         const StartEndTime = slotsData[slotType][slot];
                                                         const startPos = scaleWidth(StartEndTime[0], DayStart, DayEnd, "0%", "100%") / 100 * 640 * 0.87;
-                                                        const endPos = scaleWidth(StartEndTime[1], DayStart, DayEnd, "0%", "100%") / 100 * 640 * 0.87;
+                                                        const endPos = scaleWidth(StartEndTime[1], DayStart, DayEnd, "0%", "100%") / 100 * 640 * 0.868;
                                                         return (
                                                             <MyCell
                                                                 key={`${courseAbbr}-${slotType}-${slot}`}
