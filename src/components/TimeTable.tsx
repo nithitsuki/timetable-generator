@@ -29,7 +29,7 @@ export default function TimeTable() {
     return (
         <>
             {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"].map((day, id) => (
-                <div key={day} id={day} className=' min-h-(--time-slot-height) flex flex-row border border-solid border-slate-400' style={{ padding: '0px' }}>
+                <div key={day} id={day} className=' min-h-(--time-slot-height) flex flex-row  border-solid' style={{ padding: '0px', borderLeft: '1px solid var(--foreground)',borderBottom: '1px solid var(--foreground)' }}>
                     <MyCell className="min-w-(--slot-name) max-w-(--slot-name) text-(--sidebar-accent-foreground) bg-(--sidebar-accent)" >{day.slice(0, 3)}</MyCell>
                     {/* style={{ backgroundColor: `hsl(${30 * id }, 40%, 56%)` }}  for colored days */}
                     <div className='relative '>
@@ -47,14 +47,19 @@ export default function TimeTable() {
                                                         return (
                                                             <MyCell
                                                                 key={`${courseAbbr}-${slotType}-${slot}`}
-                                                                className='text-sm p-0 h-(--time-slot-height)'
+                                                                className='text-sm p-0 h-(--subject-cell-height)'
                                                                 style={{
                                                                     position: 'absolute',
                                                                     left: `${startPos}px`,
+                                                                    // bottom: '2px',
                                                                     width: `${endPos - startPos}px`,
                                                                     padding: '0rem',
                                                                     fontSize: '1rem',
-                                                                    backgroundColor: (slotType === "lab" ? "hsla(55, 77%, 70%, 0.93)" : "hsl(118, 25%, 80%)"),
+                                                                    backgroundColor: (slotType === "lab" ? "var(--timetable-yellow)" : "var(--timetable-green)"),
+                                                                    outline: '1px solid var(--foreground)',
+                                                                    outlineOffset: '0px',
+
+
                                                                 }}
                                                             >
                                                                 {courseAbbr} {slotType === "lab" ? slotType.toUpperCase() : ""} <br></br>

@@ -6,9 +6,9 @@ export function TimeSlots() {
     const slotTypes = Object.keys(slotsData)
 
     function HHMM_ToMinutes(timeStr: string): number {
-    const [hours, minutes] = timeStr.split(':').map(Number);
-    return hours * 60 + minutes;
-}
+        const [hours, minutes] = timeStr.split(':').map(Number);
+        return hours * 60 + minutes;
+    }
     function scaleWidth(numberInHHMM: string, inMinHHMM: string, inMaxHHMM: string, outMinPerc: string, outMaxPerc: string) {
         let number = HHMM_ToMinutes(numberInHHMM);
         let inMin = HHMM_ToMinutes(inMinHHMM); let inMax = HHMM_ToMinutes(inMaxHHMM);
@@ -16,7 +16,7 @@ export function TimeSlots() {
         let outMax = parseInt(outMaxPerc.replace("%", "").trim());
         return (number - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
     }
-    
+
     let DayStart = "23:59"
     let DayEnd = "00:00"
     for (const [type, slots] of Object.entries(slotsData)) {
@@ -30,25 +30,28 @@ export function TimeSlots() {
         <>
             {
                 slotTypes.map((type, id) => (
-                    <div id={`SLOTS-${id}`} key={String(id)} className='flex flex-row max-h-(--time-slot-height) bg-(--sidebar-accent) border border-solid border-slate-400'
+                    <div id={`SLOTS-${id}`} key={String(id)} className='flex flex-row max-h-(--time-slot-height)  border-solid '
                         // style={{ backgroundColor: (type === "lab" ? "hsl(60, 15%, 65%)" : "hsl(118, 15%, 65%)"), }}
-                        >
+                        style={{ padding: '0px', borderLeft: '1px solid var(--foreground)', borderBottom: '1px solid var(--foreground)' }}
+                    >
 
                         <MyCell className="min-w-(--slot-name) max-w-(--slot-name) "
-                            style={{ backgroundColor: (type === "lab" ? "hsl(60, 55%, 65%)" : "hsl(118, 20%, 75%)"), }}
+                            style={{ backgroundColor: (type === "lab" ? "var(--slot-yellow)" : "var(--slot-green)"), }}
                         >{type}</MyCell>
                         <div className='relative '>
                             {Object.entries(slotsData[type]).map(([slotNo, StartEndTime]) => (
                                 <MyCell
                                     key={slotNo}
-                                    className='text-sm p-0 max-h-(--time-slot-height)'
+                                    className='text-sm p-0 max-h-(--subject-cell-height)'
                                     style={{
                                         position: 'absolute',
                                         left: `${scaleWidth(StartEndTime[0], DayStart, DayEnd, "0%", "100%") / 100 * 640 * 0.87}px`,
                                         width: `${scaleWidth(StartEndTime[1], DayStart, DayEnd, "0%", "100%") / 100 * 640 * 0.87 - scaleWidth(StartEndTime[0], DayStart, DayEnd, "0%", "100%") / 100 * 640 * 0.87}px`,
                                         padding: '0rem',
-                                        backgroundColor: (type === "lab" ? "hsl(60, 55%, 65%)" : "hsl(118, 20%, 75%)"),
+                                        backgroundColor: (type === "lab" ? "var(--slot-yellow)" : "var(--slot-green)"),
                                         fontSize: '1rem',
+                                        outline: '1px solid var(--foreground)',
+                                        outlineOffset: '0px',
                                     }}
                                 >
                                     {StartEndTime[0]}{type === 'lab' ? (<pre className='py-[11px]'> - </pre>) : (<br></br>)}{StartEndTime[1]}

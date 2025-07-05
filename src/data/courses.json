@@ -87,5 +87,16 @@
             "PASS/FAIL": false,
             "Department": "AD",
             "Faculty": {"Everyone": ["Manish"]}
+        },
+        "C.L": {
+            "Subject Title": "Counselling",
+            "Abbreviation": "C.L",
+            "Lectures": 2,
+            "Tutorial": 0,
+            "Practical": 0,
+            "Credits": 2,
+            "PASS/FAIL": true,
+            "Department": "-",
+            "Faculty": {"Everyone": ["-"]}
         }
     }

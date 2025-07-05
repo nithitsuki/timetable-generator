@@ -9,13 +9,13 @@ export default function Home() {
     <div className="flex mt-4 justify-center min-h-screen">
 
       {/* Main sqr box */}
-      <div className="w-[640px] h-[640px] outline-2 border-gray-300">
+      <div className="w-[640px] h-[640px] outline-1 outline-offset-[0px]">
 
         <TimeScale />
         <TimeSlots />
-        <hr className='m-[2px]'></hr>
+        {/* <hr className='m-[2px]'></hr> */}
         <TimeTable />
-        <hr className='m-[2px]'></hr>
+        {/* <hr className='m-[2px]'></hr> */}
         <FacultyInfo />
 
       </div>
