@@ -1,61 +1,90 @@
 {
-    "O.T": {
-        "SubjectCode": "23MAT206",
+    "ML": {
+        "SubjectCode": "23CSE301",
         "occurences": {
             "Monday": {
-                "lab": [
-                    3
+                "theory": [
+                    5
                 ]
             },
-            "Tuesday": {
+            "Wednesday": {
                 "theory": [
                     6
                 ]
             },
-            "Wednesday": {
-                "theory": [
-                    1
-                ]
-            },
             "Friday": {
-                "theory": [
-                    4
-                ]
-            }
-        }
-    },
-    "C": {
-        "SubjectCode": "23CSE201",
-        "occurences": {
-            "Monday": {
-                "lab": [
-                    1
-                ]
-            },
-            "Tuesday": {
-                "theory": [
-                    1
-                ]
-            },
-            "Wednesday": {
                 "theory": [
                     3
                 ]
             },
             "Thursday": {
-                "theory": [
-                    6
+                "lab": [
+                    3
                 ]
             }
         }
     },
-    
-    "D.E": {
-        "SubjectCode": "23ECE205",
+    "NN/DL": {
+        "SubjectCode": "23CSE473",
         "occurences": {
-            "Tuesday": {
+            "Monday": {
+                "theory": [
+                    3
+                ]
+            },
+            "Wednesday": {
                 "theory": [
                     2
+                ]
+            },
+            "Friday": {
+                "lab": [
+                    2
+                ]
+            }
+        }
+    },
+    "CN": {
+        "SubjectCode": "23CSE302",
+        "occurences": {
+            "Wednesday": {
+                "theory": [
+                    1
+                ]
+            },
+            "Thursday": {
+                "theory": [
+                    1
+                ]
+            },
+            "Tuesday": {
+                "theory": [
+                    5
+                ]
+            },
+            "Friday": {
+                "theory": [
+                    6
+                ]
+            },
+            "Monday": {
+                "lab": [
+                    3
+                ]
+            }
+        }
+    },
+    "TOC": {
+        "SubjectCode": "23CSE303",
+        "occurences": {
+            "Monday": {
+                "theory": [
+                    1
+                ]
+            },
+            "Wednesday": {
+                "theory": [
+                    7
                 ]
             },
             "Thursday": {
@@ -65,116 +94,89 @@
             },
             "Friday": {
                 "theory": [
-                    6
-                ]
-            }
-        }
-    },
-    "DBMS": {
-        "SubjectCode": "23CSE202",
-        "occurences": {
-            "Tuesday": {
-                "lab": [
-                    2
-                ]
-            },
-            "Wednesday": {
-                "theory": [
-                    2
-                ]
-            },
-            "Thursday": {
-                "theory": [
-                    1
-                ]
-            },
-            "Friday": {
-                "theory": [
-                    7
-                ]
-            }
-        }
-    },
-    "D.E (A2)": {
-        "SubjectCode": "23ECE285",
-        "occurences": {
-            "Friday": {
-                "lab": [
                     1
                 ]
             }
         }
     },
-    "D.E (A1)": {
-        "SubjectCode": "23ECE285",
-        "occurences": {
-            "Wednesday": {
-                "lab": [
-                    3
-                ]
-            }
-        }
-    },
-    "FIH": {
-        "SubjectCode": "22ADM201",
+    "ES": {
+        "SubjectCode": "23CSE304",
         "occurences": {
             "Monday": {
                 "theory": [
                     4
                 ]
-            }
-        }
-    },
-    "DSA": {
-        "SubjectCode": "23CSE203",
-        "occurences": {
-            "Monday": {
-                "theory": [
-                    5
-                ]
-            },
-            "Tuesday": {
-                "theory": [
-                    7
-                ]
             },
             "Wednesday": {
-                "lab": [
-                    2
-                ]
-            },
-            "Thursday": {
                 "theory": [
-                    7
+                    4
                 ]
             },
             "Friday": {
                 "theory": [
-                    5
+                    7
+                ]
+            },
+            "Tuesday": {
+                "lab": [
+                    3
                 ]
             }
         }
     },
-    "L.S": {
-        "SubjectCode": "23LSE201",
+    "NLP": {
+        "SubjectCode": "23CSE471",
         "occurences": {
-            "Thursday": {
+            "Monday": {
                 "theory": [
-                    4,
-                    3,
                     2
-                    
-                    
+                ]
+            },
+            "Friday": {
+                "theory": [
+                    2
+                ]
+            },
+            "Tuesday": {
+                "lab": [
+                    1
+                ]
+            }
+        }
+    },
+    "EVS": {
+        "SubjectCode": "23ENV300",
+        "occurences": {
+            "Tuesday": {
+                "theory": [
+                    4
                 ]
             }
         }
     },
     "C.L": {
-        "SubjectCode": "",
+        "SubjectCode": "Counselling",
         "occurences": {
-            "Tuesday": {
+            "Wednesday": {
                 "theory": [
                     3
+                ]
+            }
+        }
+    },
+    "CIR": {
+        "SubjectCode": "23LSE301",
+        "occurences": {
+            "Wednesday": {
+                "theory": [
+                    5
+                ]
+            },
+            "Thursday": {
+                "theory": [
+                    2,
+                    3,
+                    4
                 ]
             }
         }
