@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import TimetableData from '@/data/timetable.json';
+// import TimetableData from '@/data/timetable.json';
 import slotsData from '@/data/slots.json';
 import MyCell from '@/components/MyCell';
 // Convert time strings to minutes since midnight, then subtract
@@ -15,7 +15,11 @@ function scaleWidth(numberInHHMM: string, inMinHHMM: string, inMaxHHMM: string, 
     return (number - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
 }
 
-export default function TimeTable() {
+interface TimetableProps {
+    TimetableData: any;
+}
+
+export default function TimeTable({TimetableData}: TimetableProps) {
 
     let DayStart = "23:59"
     let DayEnd = "00:00"
@@ -35,7 +39,7 @@ export default function TimeTable() {
                     <div className='relative '>
                         {Object.entries(TimetableData).map(([courseAbbr, InfoObj]) => (
                             <div key={`${day}-${courseAbbr}`} id={`${day}-${courseAbbr}`}>
-                                {Object.entries(InfoObj["occurences"]).map(([Day, DayInfo]) => (
+                                {InfoObj["occurences"] && typeof InfoObj["occurences"] === 'object' && Object.entries(InfoObj["occurences"]).map(([Day, DayInfo]) => (
                                     <Fragment key={`${day}-${Day}-${courseAbbr}`}>
                                         {day === Day && (
                                             <Fragment key={`${day}-${Day}-${courseAbbr}-inner`}>

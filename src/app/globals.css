@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @custom-variant dark (&:is(.dark *));
-@custom-variant fixed (&:is(.layout-fixed *));
+/* @custom-variant fixed (&:is(.layout-fixed *)); */
 
 @theme inline {
   --color-background: var(--background);
@@ -75,7 +75,7 @@
   --scale-red: oklch(0.5985 0.10437 22.4);
   --scale-yellow: oklch(0.8076 0.10345 109.07);
   --scale-green: oklch(0.7398 0.10832 143.45);
-/*   
+  /*   
   --slot-yellow: hsl(60, 55%, 65%);
   --slot-green: hsl(118, 20%, 75%);
   --timetable-yellow: hsla(55, 77%, 70%, 0.93);
@@ -131,42 +131,41 @@
 }
 
 .dark {
-  --scale-red: oklch(0.250985 0.140437 22.4);
-  --scale-yellow: oklch(0.480076 0.30345 109.07);
-  --scale-green: oklch(0.360398 0.0832 143.45);
-
-  --background: oklch(0.2747 0.0139 57.6523);
-  --foreground: oklch(0.9239 0.0190 83.0636);
-  --card: oklch(0.3237 0.0155 59.0603);
-  --card-foreground: oklch(0.9239 0.0190 83.0636);
-  --popover: oklch(0.3237 0.0155 59.0603);
-  --popover-foreground: oklch(0.9239 0.0190 83.0636);
-  --primary: oklch(0.7264 0.0581 66.6967);
-  --primary-foreground: oklch(0.2747 0.0139 57.6523);
-  --secondary: oklch(0.3795 0.0181 57.1280);
-  --secondary-foreground: oklch(0.9239 0.0190 83.0636);
-  --muted: oklch(0.3237 0.0155 59.0603);
-  --muted-foreground: oklch(0.7982 0.0243 82.1078);
-  --accent: oklch(0.4186 0.0281 56.3404);
-  --accent-foreground: oklch(0.9239 0.0190 83.0636);
-  --destructive: oklch(0.5471 0.1438 32.9149);
-  --destructive-foreground: oklch(1.0000 0 0);
-  --border: oklch(0.3795 0.0181 57.1280);
-  --input: oklch(0.3795 0.0181 57.1280);
-  --ring: oklch(0.7264 0.0581 66.6967);
-  --chart-1: oklch(0.7264 0.0581 66.6967);
-  --chart-2: oklch(0.6777 0.0624 64.7755);
-  --chart-3: oklch(0.6180 0.0778 65.5444);
-  --chart-4: oklch(0.5604 0.0624 68.5805);
-  --chart-5: oklch(0.4851 0.0570 72.6827);
-  --sidebar: oklch(0.2747 0.0139 57.6523);
-  --sidebar-foreground: oklch(0.9239 0.0190 83.0636);
-  --sidebar-primary: oklch(0.7264 0.0581 66.6967);
-  --sidebar-primary-foreground: oklch(0.2747 0.0139 57.6523);
-  --sidebar-accent: oklch(0.4186 0.0281 56.3404);
-  --sidebar-accent-foreground: oklch(0.9239 0.0190 83.0636);
-  --sidebar-border: oklch(0.3795 0.0181 57.1280);
-  --sidebar-ring: oklch(0.7264 0.0581 66.6967);
+  --scale-red: oklch(0.2350985 0.0740437 22.4);
+  --scale-yellow: oklch(0.4580076 0.230345 109.07);
+  --scale-green: oklch(0.3460398 0.04832 143.45);
+  --background: oklch(0.2335 0.0139 57.6523);
+  --foreground: oklch(0.7853 0.0190 83.0636);
+  --card: oklch(0.2751 0.0155 59.0603);
+  --card-foreground: oklch(0.7853 0.0190 83.0636);
+  --popover: oklch(0.2751 0.0155 59.0603);
+  --popover-foreground: oklch(0.7853 0.0190 83.0636);
+  --primary: oklch(0.6174 0.0581 66.6967);
+  --primary-foreground: oklch(0.2335 0.0139 57.6523);
+  --secondary: oklch(0.3226 0.0181 57.1280);
+  --secondary-foreground: oklch(0.7853 0.0190 83.0636);
+  --muted: oklch(0.2751 0.0155 59.0603);
+  --muted-foreground: oklch(0.6785 0.0243 82.1078);
+  --accent: oklch(0.3558 0.0281 56.3404);
+  --accent-foreground: oklch(0.7853 0.0190 83.0636);
+  --destructive: oklch(0.4650 0.1438 32.9149);
+  --destructive-foreground: oklch(0.8500 0 0);
+  --border: oklch(0.3226 0.0181 57.1280);
+  --input: oklch(0.3226 0.0181 57.1280);
+  --ring: oklch(0.6174 0.0581 66.6967);
+  --chart-1: oklch(0.6174 0.0581 66.6967);
+  --chart-2: oklch(0.5760 0.0624 64.7755);
+  --chart-3: oklch(0.5253 0.0778 65.5444);
+  --chart-4: oklch(0.4763 0.0624 68.5805);
+  --chart-5: oklch(0.4123 0.0570 72.6827);
+  --sidebar: oklch(0.2335 0.0139 57.6523);
+  --sidebar-foreground: oklch(0.7853 0.0190 83.0636);
+  --sidebar-primary: oklch(0.6174 0.0581 66.6967);
+  --sidebar-primary-foreground: oklch(0.2335 0.0139 57.6523);
+  --sidebar-accent: oklch(0.3558 0.0281 56.3404);
+  --sidebar-accent-foreground: oklch(0.7853 0.0190 83.0636);
+  --sidebar-border: oklch(0.3226 0.0181 57.1280);
+  --sidebar-ring: oklch(0.6174 0.0581 66.6967);
   --font-sans: Libre Baskerville, serif;
   --font-serif: Lora, serif;
   --font-mono: IBM Plex Mono, monospace;
@@ -182,9 +181,10 @@
 }
 
 
-html{
+html {
   background-color: var(--background);
 }
+
 table {
   font-size: 0.8rem;
   width: 100%;

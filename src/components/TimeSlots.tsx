@@ -36,14 +36,14 @@ export function TimeSlots() {
                         style={{ padding: '0px', borderLeft: '1px solid var(--foreground)', borderBottom: '1px solid var(--foreground)' }}
                     >
 
-                        <MyCell className="min-w-(--slot-name) max-w-(--slot-name) "
+                        <MyCell className="min-w-(--slot-name) max-w-(--slot-name) max-h-(--time-slot-height) "
                             style={{ backgroundColor: (type === "lab" ? "var(--slot-yellow)" : "var(--slot-green)"), }}
                         >{type}</MyCell>
                         <div className='relative '>
                             {Object.entries(slotsData[type]).map(([slotNo, StartEndTime]) => (
                                 <MyCell
                                     key={slotNo}
-                                    className='text-sm p-0 max-h-(--subject-cell-height)'
+                                    className='text-sm p-0 max-h-(--time-slot-height)'
                                     style={{
                                         position: 'absolute',
                                         left: `${scaleWidth(StartEndTime[0], DayStart, DayEnd, "0%", "100%") / 100 * 640 * 0.868}px`,

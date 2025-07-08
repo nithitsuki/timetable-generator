@@ -1,0 +1,136 @@
+{
+    "23CSE301": {
+        "Subject Title": "Machine Learning",
+        "Abbreviation": "ML",
+        "Lectures": 3,
+        "Tutorial": 0,
+        "Practical": 2,
+        "Credits": 4,
+        "PASS/FAIL": false,
+        "Department": "CSE",
+        "Faculty": {
+            "Everyone": [
+                "Dr. Peeta Basa Pati",
+                "Co-Dr. Debanjali B"
+            ]
+        }
+    },
+    "23CSE473": {
+        "Subject Title": "Neural Networks",
+        "Abbreviation": "NNDL",
+        "Lectures": 2,
+        "Tutorial": 0,
+        "Practical": 3,
+        "Credits": 3,
+        "PASS/FAIL": false,
+        "Department": "CSE",
+        "Faculty": {
+            "Everyone": [
+                "Ms. Saranya Devi",
+                "Ms. Niharika Panda"
+            ]
+        }
+    },
+    "23CSE302": {
+        "Subject Title": "Computer Networks",
+        "Abbreviation": "CN",
+        "Lectures": 3,
+        "Tutorial": 1,
+        "Practical": 2,
+        "Credits": 5,
+        "PASS/FAIL": false,
+        "Department": "CSE",
+        "Faculty": {
+            "Everyone": [
+                "Dr. Thangam S",
+                "Co-Ms. Sreebha"
+            ]
+        }
+    },
+    "23CSE303": {
+        "Subject Title": "Theo. of Compute",
+        "Abbreviation": "TOC",
+        "Lectures": 3,
+        "Tutorial": 1,
+        "Practical": 0,
+        "Credits": 4,
+        "PASS/FAIL": false,
+        "Department": "CSE",
+        "Faculty": {
+            "Everyone": [
+                "Dr. Gurupriya M"
+            ]
+        }
+    },
+    "23CSE304": {
+        "Subject Title": "Embedded Sys's",
+        "Abbreviation": "ES",
+        "Lectures": 3,
+        "Tutorial": 0,
+        "Practical": 2,
+        "Credits": 3,
+        "PASS/FAIL": false,
+        "Department": "CSE",
+        "Faculty": {
+            "Everyone": [
+                "Dr. Meena Belwal",
+                "Co-Ms. Kavitha C R"
+            ]
+        }
+    },
+    "23CSE471": {
+        "Subject Title": "Natural Lang Proc",
+        "Abbreviation": "NLP",
+        "Lectures": 2,
+        "Tutorial": 0,
+        "Practical": 3,
+        "Credits": 3,
+        "PASS/FAIL": false,
+        "Department": "CSE",
+        "Faculty": {
+            "Everyone": [
+                "Dr. Manju Venugopal",
+                "Dr. Nandu C Nair"
+            ],
+            "CO": [
+                "Co-Ms. Afnan K",
+                "Ms. Remya Sivan"
+            ]
+        }
+    },
+    "23CSE472": {
+        "Subject Title": "AI and Robotics",
+        "Abbreviation": "AI&R",
+        "Lectures": 3,
+        "Tutorial": 0,
+        "Practical": 3,
+        "Credits": 3,
+        "PASS/FAIL": false,
+        "Department": "CSE",
+        "Faculty": {
+            "Everyone": [
+                "Dr. Nidhin Prabhakar",
+                "Dr. Nippun Kumar"
+            ],
+                "CO": [
+                "Co-Dr. Kiran Pandiri"
+            ]
+        }
+    },
+    "23LSE301": {
+        "Subject Title": "Life Skills III",
+        "Abbreviation": "LSE III",
+        "Lectures": 1,
+        "Tutorial": 0,
+        "Practical": 2,
+        "Credits": 2,
+        "PASS/FAIL": false,
+        "Department": "CIR",
+        "Faculty": {
+            "Everyone": [
+                "Karishma Nair",
+                "Jisha Nair"
+            ]
+        }
+    }
+}

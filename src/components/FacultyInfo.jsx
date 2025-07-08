@@ -1,14 +1,15 @@
 import React from 'react';
-import coursesData from '@/data/courses.json';
+// import coursesData from '@/data/courses.json';
 
-export default function FacultyInfo() {
+export default function FacultyInfo({coursesData}) {
 
-    Object.entries(coursesData).forEach(([SubjCode, SubjInfoObj]) => {
-        console.log({
-            SubjCode,
-            SubjInfoObj,
-        });
-    });
+    // Object.entries(coursesData).forEach(([SubjCode, SubjInfoObj]) => {
+    //     console.log({
+    //         SubjCode,
+    //         SubjInfoObj,
+    //     });
+    // });
+    console.log("coursesData", coursesData);
 
     return (
         <table>
