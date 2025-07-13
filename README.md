@@ -1,15 +1,16 @@
 # timetable-icon-generator
-The timetables at my uni, Amrita Vishwa Vidyapeetham, are functional, but I thought they could be a lot better. So, I made this project to turn the standard rectangular schedule into a compact, square icon. It's configured with simple JSON files and even scales the class blocks to show how long they actually are (rather than confusingly using a simple table for complex slots).
+The timetables at my uni, Amrita Vishwa Vidyapeetham, are functional, but I thought they could be a lot better. So, I made this project to turn the standard rectangular schedule into a compact, square icon. It's configured with simple JSON files and even scales the class blocks to show how long they actually are (rather than confusingly using a simple table for complex time-slots).
 
-The images below are from a WhatsApp group icon, which is what most students use for convenience.\
-This is where my version really shines. the old one is barely legible and way more annoying to look at\
-high quality image [available here](./public/screenshot.png)
+This was mainly made for my own use, especially since the class group pfp is the timetable for quick access, but I thought it might be useful to others too, so I'm sharing it here.
+
+(I've also learnt a lot about Next.js app router and JSON objects, so that's a bonus!)
+
 
 ## My Version:
 <img src="./public/screenshot-wa.png" alt="Timetable Screenshot" width="300" height="300">
 
 ## Old Version:
-<img src="./public/screenshot-old-wa.png" alt="Old Timetable Screenshot" width="300" height="300">
+<img src="./public/old-table.png" alt="Old Timetable Screenshot" width="600" height="300">
 
 ## ✨ Features
 
