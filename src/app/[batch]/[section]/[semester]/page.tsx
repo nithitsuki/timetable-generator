@@ -27,29 +27,7 @@ export default async function Page({ params, }: {params: Promise<{
 
   const coursesRes = await fetch(`${baseUrl}/data/${batch}/${section}/${semester}/courses.json`);
   if (coursesRes.ok) { coursesData = await coursesRes.json(); }
-  // const [TimeTableData, setTimeTableData] = React.useState<any>({});
-  // const [coursesData, setCoursesData] = React.useState<any>({});
 
-  // useEffect(() => {
-  //   setChosenClass(ClassesData.find(batch => batch.ClassOf === chosenBatch)?.Classes[0] || "");
-  // },
-  //   [chosenBatch]
-  // )
-  // useEffect(() => {
-  //   import(`@/data/${chosenBatch}/${chosenClass}/courses.json`)
-  //     .then((coursesData) => {
-  //       setCoursesData(coursesData.default);
-  //     })
-  //     .catch((error) => console.error("Failed to load timetable data:", error));
-  // }, [chosenBatch, chosenClass]);
-
-  // useEffect(() => {
-  //   import(`@/data/${chosenBatch}/${chosenClass}/timetable.json`)
-  //     .then((TimeTableData) => {
-  //       setTimeTableData(TimeTableData.default);
-  //     })
-  //     .catch((error) => console.error("Failed to load timetable data:", error));
-  // }, [chosenBatch, chosenClass]);
 
   return (
     <div className="flex  flex-col mt-4 items-center  min-h-screen">
