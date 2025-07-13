@@ -1,9 +1,6 @@
-"use client";
-import React, { use, useEffect } from 'react';
 import { TimeScale } from './../components/TimeScale';
 import { TimeSlots } from '@/components/TimeSlots';
-
-import ClassesData from '@/data/Classes.json';
+import ClassesData from '../../public/data/Classes.json';
 import TimeTable from '@/components/TimeTable';
 import FacultyInfo from '@/components/FacultyInfo';
 import {
@@ -14,7 +11,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import ModeToggle from '@/components/comp-130';
-import html2canvas from 'html2canvas';
 
 export default function Home() {
   const Batches = ClassesData.map((batch) => batch.ClassOf);
