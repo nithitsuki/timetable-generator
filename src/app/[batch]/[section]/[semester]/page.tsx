@@ -1,4 +1,6 @@
+import { redirect } from 'next/navigation';
 import PageNavigator from '@/components/selectors/PageNavigator';
+import FetchErrors from '@/errors.json';
 import { TimeScale } from '@/components/TimeScale';
 import { TimeSlots } from '@/components/TimeSlots';
 import ClassesData from '@/../public/data/Classes.json';
@@ -10,13 +12,17 @@ export default async function Page({ params }: { params: { batch: string, sectio
   const Batches = ClassesData.map((batch) => batch.ClassOf);
   const { batch, section, semester } = params;
   const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
-  const host = process.env.NEXT_PUBLIC_BASE_URL || "localhost:3001";
+  const host = process.env.NEXT_PUBLIC_BASE_URL || "localhost:3000";
   const baseUrl = `${protocol}://${host}`;
+  let TimeTableData = FetchErrors["timetable.json"];
+  let coursesData = {};
+
   const timetableRes = await fetch(`${baseUrl}/data/${batch}/${section}/${semester}/timetable.json`);
-  const TimeTableData = await timetableRes.json();
+  if (timetableRes.ok) { TimeTableData = await timetableRes.json(); }
+  else { redirect("/404"); return; }
 
   const coursesRes = await fetch(`${baseUrl}/data/${batch}/${section}/${semester}/courses.json`);
-  const coursesData = await coursesRes.json();
+  if (coursesRes.ok) { coursesData = await coursesRes.json(); }
   // const [TimeTableData, setTimeTableData] = React.useState<any>({});
   // const [coursesData, setCoursesData] = React.useState<any>({});
 

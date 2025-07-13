@@ -1,0 +1,14 @@
+{
+    "timetable.json": {
+        "NO INFO AVAILABLE!": {
+            "SubjectCode": "23MAT206",
+            "occurences": {
+                "Monday": {
+                    "lab": [
+                        2
+                    ]
+                }
+            }
+        }
+    }
+}

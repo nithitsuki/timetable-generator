@@ -8,12 +8,17 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import ClassesData from "@/../public/data/Classes.json";
 
 export default function PageNavigator({ batch, section, semester, batches, sections }) {
     const router = useRouter();
 
     const handleBatchChange = (newBatch: string) => {
-        router.push(`/${newBatch}/${section}/${semester}`);
+        const defaultSection = ClassesData.find(ExistingBatchObj => {ExistingBatchObj.ClassOf === newBatch;})?.Classes[0] || sections[0];
+        const CurrentYear = new Date().getFullYear();
+        const timeTillGrad = parseInt(newBatch) - CurrentYear; //min 1, max 4
+        const CurrentSemester = Math.abs(timeTillGrad - 4)*2 + 1; //first time for me solving problems lmao
+        router.push(`/${newBatch}/${defaultSection}/${CurrentSemester}`);
     };
 
     const handleSectionChange = (newSection: string) => {

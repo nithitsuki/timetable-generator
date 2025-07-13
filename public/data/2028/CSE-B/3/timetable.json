@@ -1,6 +1,6 @@
 {
-    "A": {
-        "SubjectCode": "",
+    "O.T": {
+        "SubjectCode": "23MAT206",
         "occurences": {
             "Monday": {
                 "theory": [
@@ -24,8 +24,8 @@
             }
         }
     },
-    "B": {
-        "SubjectCode": "",
+    "D.E": {
+        "SubjectCode": "23ECE205",
         "occurences": {
             "Wednesday": {
                 "theory": [
@@ -45,7 +45,7 @@
         }
     },
     "C": {
-        "SubjectCode": "",
+        "SubjectCode": "23CSE201",
         "occurences": {
             "Tuesday": {
                 "theory": [
@@ -69,9 +69,14 @@
             }
         }
     },
-    "D": {
-        "SubjectCode": "",
+    "D.B.M.S": {
+        "SubjectCode": "23CSE202",
         "occurences": {
+            "Monday": {
+                "lab": [
+                    2
+                ]
+            },
             "Tuesday": {
                 "theory": [
                     6
@@ -89,8 +94,8 @@
             }
         }
     },
-    "E": {
-        "SubjectCode": "",
+    "DSA": {
+        "SubjectCode": "23CSE203",
         "occurences": {
             "Monday": {
                 "theory": [
@@ -119,8 +124,8 @@
             }
         }
     },
-    "F": {
-        "SubjectCode": "",
+    "DE": {
+        "SubjectCode": "23ECE285",
         "occurences": {
             "Monday": {
                 "lab": [
@@ -134,8 +139,8 @@
             }
         }
     },
-    "G": {
-        "SubjectCode": "",
+    "L.S": {
+        "SubjectCode": "23LSE201",
         "occurences": {
             "Tuesday": {
                 "theory": [
@@ -150,8 +155,8 @@
             }
         }
     },
-    "H": {
-        "SubjectCode": "",
+    "FIH": {
+        "SubjectCode": "22ADM201",
         "occurences": {
             "Wednesday": {
                 "theory": [
