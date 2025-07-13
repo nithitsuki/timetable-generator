@@ -15,9 +15,7 @@ export default async function Page({ params, }: {params: Promise<{
 }>;}) {
   const Batches = ClassesData.map((batch) => batch.ClassOf);
   const { batch, section, semester } = await params;
-  const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
-  const host = process.env.NEXT_PUBLIC_BASE_URL || "localhost:3000";
-  const baseUrl = `${protocol}://${host}`;
+  const baseUrl = (process.env.NODE_ENV === "development") ? "http://localhost:3000" : process.env.NEXT_PUBLIC_BASE_URL;
   let TimeTableData = FetchErrors["timetable.json"];
   let coursesData = {};
 
