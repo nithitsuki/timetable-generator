@@ -14,7 +14,7 @@ export default function PageNavigator({ batch, section, semester, batches, secti
     const router = useRouter();
 
     const handleBatchChange = (newBatch: string) => {
-        const defaultSection = ClassesData.find(ExistingBatchObj => {ExistingBatchObj.ClassOf === newBatch;})?.Classes[0] || sections[0];
+        const defaultSection = ClassesData.find(ExistingBatchObj => {return(ExistingBatchObj.ClassOf === newBatch);})?.Classes[0] || sections[0];
         const CurrentYear = new Date().getFullYear();
         const timeTillGrad = parseInt(newBatch) - CurrentYear; //min 1, max 4
         const CurrentSemester = Math.abs(timeTillGrad - 4)*2 + 1; //first time for me solving problems lmao

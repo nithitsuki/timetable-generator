@@ -8,9 +8,13 @@ import TimeTable from '@/components/TimeTable';
 import FacultyInfo from '@/components/FacultyInfo';
 
 
-export default async function Page({ params }: { params: { batch: string, section: string, semester: number } }) {
+export default async function Page({ params, }: {params: Promise<{
+  batch: string;
+  section: string;
+  semester: string;
+}>;}) {
   const Batches = ClassesData.map((batch) => batch.ClassOf);
-  const { batch, section, semester } = params;
+  const { batch, section, semester } = await params;
   const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
   const host = process.env.NEXT_PUBLIC_BASE_URL || "localhost:3000";
   const baseUrl = `${protocol}://${host}`;
