@@ -1,5 +1,5 @@
 {
-    "D": {
+    "EMTW": {
         "SubjectCode": "23ECE204",
         "occurences": {
             "Monday": {
@@ -24,7 +24,7 @@
             }
         }
     },
-    "A": {
+    "DI.EL": {
         "SubjectCode": "23ECE201",
         "occurences": {
             "Monday": {
@@ -44,7 +44,7 @@
             }
         }
     },
-    "B": {
+    "AN.EL": {
         "SubjectCode": "23ECE202",
         "occurences": {
             "Monday": {
@@ -64,7 +64,7 @@
             }
         }
     },
-    "C": {
+    "SIGP": {
         "SubjectCode": "23ECE203",
         "occurences": {
             "Monday": {
@@ -89,7 +89,7 @@
             }
         }
     },
-    "E": {
+    "DS": {
         "SubjectCode": "23ECE205",
         "occurences": {
             "Tuesday": {
@@ -98,7 +98,9 @@
                 ]
             },
             "Wednesday": {
-                "theory": [6]
+                "theory": [
+                    6
+                ]
             },
             "Thursday": {
                 "theory": [
@@ -117,7 +119,9 @@
         "occurences": {
             "Monday": {
                 "theory": [
-                    5,6,7
+                    5,
+                    6,
+                    7
                 ]
             }
         }
