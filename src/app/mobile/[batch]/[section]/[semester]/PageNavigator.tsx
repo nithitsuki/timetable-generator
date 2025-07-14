@@ -18,11 +18,11 @@ export default function PageNavigator({ batch, section, semester, batches, secti
         const CurrentYear = new Date().getFullYear();
         const timeTillGrad = parseInt(newBatch) - CurrentYear; //min 1, max 4
         const CurrentSemester = Math.abs(timeTillGrad - 4)*2 + 1; //first time for me solving problems lmao
-        router.push(`/${newBatch}/${defaultSection}/${CurrentSemester}`);
+        router.push(`/mobile/${newBatch}/${defaultSection}/${CurrentSemester}`);
     };
 
     const handleSectionChange = (newSection: string) => {
-        router.push(`/${batch}/${newSection}/${semester}`);
+        router.push(`/mobile/${batch}/${newSection}/${semester}`);
     };
 
     return (

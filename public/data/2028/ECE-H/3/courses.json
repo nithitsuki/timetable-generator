@@ -1,0 +1,121 @@
+{
+    "23ECE201": {
+        "Subject Title": "Digital Electronics",
+        "Abbreviation": "D.E",
+        "Lectures": 3,
+        "Tutorial": 0,
+        "Practical": 0,
+        "Credits": 3,
+        "PASS/FAIL": false,
+        "Department": "ECE",
+        "Faculty": {"Everyone": ["G. Hegde"]}
+    },
+    "23ECE202": {
+        "Subject Title": "Analog Electronics I",
+        "Abbreviation": "A.E I",
+        "Lectures": 3,
+        "Tutorial": 0,
+        "Practical": 0,
+        "Credits": 3,
+        "PASS/FAIL": false,
+        "Department": "ECE",
+        "Faculty": {"Everyone": ["G. R"]}
+    },
+    "23ECE203": {
+        "Subject Title": "Signal Processing II",
+        "Abbreviation": "SP II",
+        "Lectures": 3,
+        "Tutorial": 0,
+        "Practical": 0,
+        "Credits": 3,
+        "PASS/FAIL": false,
+        "Department": "ECE",
+        "Faculty": {"Everyone": ["P. R. Harivanam"]}
+    },
+    "23ECE204": {
+        "Subject Title": "EM Theory & Waves",
+        "Abbreviation": "EMTW",
+        "Lectures": 3,
+        "Tutorial": 1,
+        "Practical": 0,
+        "Credits": 4,
+        "PASS/FAIL": false,
+        "Department": "ECE",
+        "Faculty": {"Everyone": ["J. Bahadur"]}
+    },
+    "23ECE205": {
+        "Subject Title": "Found. of Data Science",
+        "Abbreviation": "FDS",
+        "Lectures": 3,
+        "Tutorial": 1,
+        "Practical": 0,
+        "Credits": 4,
+        "PASS/FAIL": false,
+        "Department": "ECE",
+        "Faculty": {"Everyone": ["L. S"]}
+    },
+    "23ECE281": {
+        "Subject Title": "Digital Electronics Lab",
+        "Abbreviation": "DE LAB",
+        "Lectures": 0,
+        "Tutorial": 0,
+        "Practical": 3,
+        "Credits": 1,
+        "PASS/FAIL": false,
+        "Department": "ECE",
+        "Faculty": {
+            "A1": ["G. Hegde", "S. K. Reddy"],
+            "A2": ["G. Hegde", "J. M. Oli"]
+        }
+    },
+    "23ECE282": {
+        "Subject Title": "Analog Electronics Lab",
+        "Abbreviation": "AE LAB",
+        "Lectures": 0,
+        "Tutorial": 0,
+        "Practical": 3,
+        "Credits": 1,
+        "PASS/FAIL": false,
+        "Department": "ECE",
+        "Faculty": {
+            "A1": ["G. R", "P. Aruna"],
+            "A2": ["G. R", "B. V"]
+        }
+    },
+    "23ECE283": {
+        "Subject Title": "DSP Lab",
+        "Abbreviation": "DSP LAB",
+        "Lectures": 0,
+        "Tutorial": 0,
+        "Practical": 3,
+        "Credits": 1,
+        "PASS/FAIL": false,
+        "Department": "ECE",
+        "Faculty": {
+            "A1": ["K. S", "V. Venugopal"],
+            "A2": ["P. R. Harivanam", "L. S"]
+        }
+    },
+    "23AVP201": {
+        "Subject Title": "AVP-1",
+        "Abbreviation": "AVP I",
+        "Lectures": 1,
+        "Tutorial": 0,
+        "Practical": 0,
+        "Credits": 1,
+        "PASS/FAIL": false,
+        "Department": "Amritadarshanam",
+        "Faculty": {"Everyone": ["M. R. Walvekar"]}
+    },
+    "23LSE201": {
+        "Subject Title": "Life Skills Engg I",
+        "Abbreviation": "LSE I",
+        "Lectures": 1,
+        "Tutorial": 0,
+        "Practical": 2,
+        "Credits": 0,
+        "PASS/FAIL": true,
+        "Department": "CIR",
+        "Faculty": {"Everyone": ["S. V", "S. N", "A. Jain"]}
+    }
+}

@@ -1,6 +1,6 @@
 import React from "react";
 import MyCell from "@/components/MyCell";
-import slotsData from "../../public/data/slots.json";
+import slotsData from "../../../../../public/data/slots.json";
 
 export function TimeSlots() {
     const slotTypes = Object.keys(slotsData)

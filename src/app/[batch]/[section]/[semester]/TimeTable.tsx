@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 // import TimetableData from '@/data/timetable.json';
-import slotsData from '../../public/data/slots.json';
+import slotsData from '../../../../../public/data/slots.json';
 import MyCell from '@/components/MyCell';
 // Convert time strings to minutes since midnight, then subtract
 function HHMM_ToMinutes(timeStr: string): number {

@@ -1,0 +1,175 @@
+{
+    "D": {
+        "SubjectCode": "23ECE204",
+        "occurences": {
+            "Monday": {
+                "theory": [
+                    1
+                ]
+            },
+            "Tuesday": {
+                "theory": [
+                    2
+                ]
+            },
+            "Wednesday": {
+                "theory": [
+                    4
+                ]
+            },
+            "Friday": {
+                "theory": [
+                    6
+                ]
+            }
+        }
+    },
+    "A": {
+        "SubjectCode": "23ECE201",
+        "occurences": {
+            "Monday": {
+                "theory": [
+                    2
+                ]
+            },
+            "Tuesday": {
+                "theory": [
+                    1
+                ]
+            },
+            "Thursday": {
+                "theory": [
+                    4
+                ]
+            }
+        }
+    },
+    "B": {
+        "SubjectCode": "23ECE202",
+        "occurences": {
+            "Monday": {
+                "theory": [
+                    3
+                ]
+            },
+            "Wednesday": {
+                "theory": [
+                    5
+                ]
+            },
+            "Thursday": {
+                "theory": [
+                    1
+                ]
+            }
+        }
+    },
+    "C": {
+        "SubjectCode": "23ECE203",
+        "occurences": {
+            "Monday": {
+                "theory": [
+                    4
+                ]
+            },
+            "Tuesday": {
+                "theory": [
+                    4
+                ]
+            },
+            "Wednesday": {
+                "theory": [
+                    1
+                ]
+            },
+            "Thursday": {
+                "theory": [
+                    2
+                ]
+            }
+        }
+    },
+    "E": {
+        "SubjectCode": "23ECE205",
+        "occurences": {
+            "Tuesday": {
+                "theory": [
+                    3
+                ]
+            },
+            "Wednesday": {
+                "theory": [6]
+            },
+            "Thursday": {
+                "theory": [
+                    3
+                ]
+            },
+            "Friday": {
+                "theory": [
+                    1
+                ]
+            }
+        }
+    },
+    "LSE": {
+        "SubjectCode": "23LSE201",
+        "occurences": {
+            "Monday": {
+                "theory": [
+                    5,6,7
+                ]
+            }
+        }
+    },
+    "AVP I": {
+        "SubjectCode": "-",
+        "occurences": {
+            "Friday": {
+                "theory": [
+                    2
+                ]
+            }
+        }
+    },
+    "DSP Lab A2/AE A1": {
+        "SubjectCode": "23ECE283/23ECE282",
+        "occurences": {
+            "Wednesday": {
+                "lab": [
+                    1
+                ]
+            }
+        }
+    },
+    "DE A1": {
+        "SubjectCode": "23ECE281",
+        "occurences": {
+            "Friday": {
+                "lab": [
+                    2
+                ]
+            }
+        }
+    },
+    "DE A2": {
+        "SubjectCode": "23ECE281",
+        "occurences": {
+            "Thursday": {
+                "lab": [
+                    3
+                ]
+            }
+        }
+    },
+    "DSP Lab A1/AE  A2": {
+        "SubjectCode": "23ECE283/23ECE282",
+        "occurences": {
+            "Tuesday": {
+                "lab": [
+                    3
+                ]
+            }
+        }
+    }
+}
