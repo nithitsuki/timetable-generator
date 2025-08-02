@@ -1,17 +1,41 @@
 "use client";
-import { redirect } from 'next/navigation';
-import ClassesData from '@/../public/data/Classes.json';
+import { ClassesDataType } from '@/Types';
+import ClassesDataRaw from '@/../public/classes.json';
 import ModeToggle from '@/components/comp-130';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
 
 export default function page() {
-    const Batches = ClassesData.map((batch) => batch.ClassOf);
-    const handleRedirect = (classOf: string, section: string) => {
-        const CurrentYear = new Date().getFullYear();
-        const timeTillGrad = parseInt(classOf) - CurrentYear; // min 1, max 4
-        const semester = Math.abs(timeTillGrad - 4) * 2 + 1; // Calculate semester based on graduation year logic
-        const url = `/${classOf}/${section}/${semester}`;
-        redirect(url);
-    }
+    const ClassesData: ClassesDataType = ClassesDataRaw as ClassesDataType;
+    const years = Object.keys(ClassesData.timetables);
+    const [batch, setBatch] = useState(years[0]);
+    const sections = Object.keys(ClassesData.timetables[batch]);
+    const [section, setSection] = useState(sections[0]);
+    const semesters = Object.values(ClassesData.timetables[batch][section]);
+    const [semester, setSemester] = useState(semesters[0]);
+
+    const handleBatchChange = (value: string) => {
+        setBatch(value);
+        setSection(Object.keys(ClassesData.timetables[value])[0]);
+        setSemester(Object.values(ClassesData.timetables[value][Object.keys(ClassesData.timetables[value])[0]])[0]);
+    };
+
+    const handleSectionChange = (value: string) => {
+        setSection(value);
+        setSemester(Object.values(ClassesData.timetables[batch][value])[0]);
+    };
+
+    const handleSemesterChange = (value: string) => {
+        setSemester(value);
+    };
+
     return (
         <div className="flex flex-col items-center  min-h-screen bg-background p-6">
             <div className="text-center mb-8 relative">
@@ -21,26 +45,42 @@ export default function page() {
                 <h1 className="text-4xl font-bold text-foreground mb-2">Timetable Viewer</h1>
                 <p className="text-lg text-muted-foreground">Select your class and section</p>
             </div>
-            
-            <div className="grid gap-6 w-full max-w-2xl">
-            {ClassesData.map((batch, index) => (
-            <div key={index} className="bg-card rounded-xl shadow-lg border border-border p-6 hover:shadow-xl transition-shadow duration-300">
-            <h2 className="text-2xl font-semibold text-card-foreground mb-4 text-center border-b border-border pb-3">
-                Class of {batch.ClassOf}
-            </h2>
-            <div className="grid grid-cols-2 gap-3">
-                {batch.Classes.map((className, idx) => (
-                <button
-                key={idx}
-                className="bg-primary hover:cursor-pointer hover:bg-primary/90 text-primary-foreground font-medium py-3 px-4 rounded-lg transition-colors duration-200 hover:scale-105 transform"
-                onClick={() => handleRedirect(batch.ClassOf, className)}
-                >
-                {className}
-                </button>
-                ))}
-            </div>
-            </div>
-            ))}
+
+            <div className="flex flex-row items-center justify-center space-x-4">
+                <Select value={batch} onValueChange={handleBatchChange}>
+                    <SelectTrigger className="w-[140px]">
+                        <SelectValue placeholder="Batch" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {years.map((b, id) => (
+                            <SelectItem key={id} value={b}>{parseInt(b) + 4}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+
+                <Select value={section} onValueChange={handleSectionChange}>
+                    <SelectTrigger className="w-[140px]">
+                        <SelectValue placeholder="Class" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {sections.map((s, id) => (
+                            <SelectItem key={id} value={s}>{s}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+
+                <Select value={semester} onValueChange={handleSemesterChange}>
+                    <SelectTrigger className="w-[140px]">
+                        <SelectValue placeholder="Semester" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {semesters.map((s, id) => (
+                            <SelectItem key={id} value={s}>{s}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+
+                <Button>Go!</Button>
             </div>
         </div>
     );

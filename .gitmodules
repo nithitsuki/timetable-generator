@@ -1,0 +1,3 @@
+[submodule "deps/timetable-registry"]
+	path = deps/timetable-registry
+	url = https://github.com/amritadottown/timetable-registry.git

@@ -1,4 +1,4 @@
-// middleware.ts
+import { redirect } from 'next/navigation';
 import { NextRequest, NextResponse } from 'next/server';
 
 // This function checks if a user agent string belongs to a mobile device.
@@ -7,6 +7,14 @@ function isMobile(userAgent: string | null): boolean {
     // A simple regex that checks for common mobile keywords in the user agent string.
     // This is a common, though not exhaustive, way to check for mobile devices.
     return /Mobi|Android|iPad|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+}
+
+export function handleRedirect(classOf: string, section: string) {
+    const CurrentYear = new Date().getFullYear();
+    const timeTillGrad = parseInt(classOf) - CurrentYear; // min 1, max 4
+    const semester = Math.abs(timeTillGrad - 4) * 2 + 1; // Calculate semester based on graduation year logic
+    const url = `/${classOf}/${section}/${semester}`;
+    redirect(url);
 }
 
 export function middleware(request: NextRequest): NextResponse {
