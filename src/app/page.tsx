@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/select";
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
+import { time } from 'console';
 
 export default function page() {
     const ClassesData: ClassesDataType = ClassesDataRaw as ClassesDataType;
@@ -35,6 +37,18 @@ export default function page() {
     const handleSemesterChange = (value: string) => {
         setSemester(value);
     };
+    const router = useRouter();
+
+    function handleGoButton() {
+        const timetable = ClassesData.timetables[batch][section][semester];
+        if (timetable) {
+            router.push(`/${batch}/${section}/${semester}`);
+        } else {
+            alert("Timetable not found for the selected options.");
+            console.error(`Timetable not found for batch: ${batch}, section: ${section}, semester: ${semester}`);
+            console.error("timetable data:", timetable);
+        }
+    }
 
     return (
         <div className="flex flex-col items-center  min-h-screen bg-background p-6">
@@ -46,9 +60,9 @@ export default function page() {
                 <p className="text-lg text-muted-foreground">Select your class and section</p>
             </div>
 
-            <div className="flex flex-row items-center justify-center space-x-4">
+            <div className="w-full max-w-xs sm:max-w-none sm:w-auto flex flex-col sm:flex-row items-center justify-center gap-3 sm:space-x-4">
                 <Select value={batch} onValueChange={handleBatchChange}>
-                    <SelectTrigger className="w-[140px]">
+                    <SelectTrigger className="w-full sm:w-[140px]">
                         <SelectValue placeholder="Batch" />
                     </SelectTrigger>
                     <SelectContent>
@@ -59,7 +73,7 @@ export default function page() {
                 </Select>
 
                 <Select value={section} onValueChange={handleSectionChange}>
-                    <SelectTrigger className="w-[140px]">
+                    <SelectTrigger className="w-full sm:w-[140px]">
                         <SelectValue placeholder="Class" />
                     </SelectTrigger>
                     <SelectContent>
@@ -70,7 +84,7 @@ export default function page() {
                 </Select>
 
                 <Select value={semester} onValueChange={handleSemesterChange}>
-                    <SelectTrigger className="w-[140px]">
+                    <SelectTrigger className="w-full sm:w-[140px]">
                         <SelectValue placeholder="Semester" />
                     </SelectTrigger>
                     <SelectContent>
@@ -80,7 +94,7 @@ export default function page() {
                     </SelectContent>
                 </Select>
 
-                <Button>Go!</Button>
+                <Button className="w-full sm:w-auto" onClick={() => {handleGoButton();}}>Go!</Button>
             </div>
         </div>
     );
