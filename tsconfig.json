@@ -23,5 +23,5 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/[batch]/[section]/[semester]/TimeSlots.tsx", "src/components/FacultyInfo.jsx"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "deps"]
 }

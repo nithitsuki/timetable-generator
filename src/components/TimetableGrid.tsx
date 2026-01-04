@@ -132,14 +132,14 @@ export default function TimetableGrid({ timetable }: TimetableGridProps) {
         }
 
         const parsed = resolved ? parseSlotRef(resolved) : { subjectKey: null, isLab: false };
-        const isLab = parsed.isLab || span > 1;
+        const isLab = parsed.isLab; // Only check if it's explicitly marked as _LAB
 
         // Calculate actual time based on whether it's a lab or theory
         let startTime: string;
         let endTime: string;
 
-        if (isLab && span > 1) {
-          // Find which lab slot this corresponds to
+        if (isLab) {
+          // Find which lab slot this corresponds to based on start index
           if (startIndex <= 2) {
             startTime = LAB_SLOTS.morning.start;
             endTime = LAB_SLOTS.morning.end;
@@ -151,7 +151,7 @@ export default function TimetableGrid({ timetable }: TimetableGridProps) {
             endTime = LAB_SLOTS.afternoon.end;
           }
         } else {
-          // Theory slot timing
+          // Theory slot timing - use consecutive theory slots
           startTime = THEORY_SLOTS[startIndex]?.start || '08:10';
           endTime = THEORY_SLOTS[startIndex + span - 1]?.end || '15:40';
         }
