@@ -1,49 +1,62 @@
 import { redirect } from 'next/navigation';
-import PageNavigator from '@/components/selectors/PageNavigator';
-import FetchErrors from '@/errors.json';
-import { TimeScale } from './TimeScale';
-import { TimeSlots } from './TimeSlots';
-import TimeTable     from './TimeTable';
-import ClassesData from '@/../public/data/Classes.json';
-import FacultyInfo from '@/components/FacultyInfo';
+import { loadTimetable, buildTimetableIndex } from '@/lib/registry';
+import TimetableGrid from '@/components/TimetableGrid';
+import TimetableHeader from './TimetableHeader';
 
-
-export default async function Page({ params, }: {params: Promise<{
-  batch: string;
-  section: string;
-  semester: string;
-}>;}) {
-  const Batches = ClassesData.map((batch) => batch.ClassOf);
+export default async function Page({ params }: {
+  params: Promise<{
+    batch: string;
+    section: string;
+    semester: string;
+  }>;
+}) {
   const { batch, section, semester } = await params;
-  const baseUrl = (process.env.NODE_ENV === "development") ? "http://localhost:3000" : process.env.NEXT_PUBLIC_BASE_URL;
-  let TimeTableData = FetchErrors["timetable.json"];
-  let coursesData = {};
+  
+  // Load timetable data
+  const timetable = loadTimetable(batch, section, semester);
+  
+  if (!timetable) {
+    redirect("/404");
+  }
 
-  const timetableRes = await fetch(`${baseUrl}/data/${batch}/${section}/${semester}/timetable.json`);
-  if (timetableRes.ok) { TimeTableData = await timetableRes.json(); }
-  else { redirect("/404"); return; }
-
-  const coursesRes = await fetch(`${baseUrl}/data/${batch}/${section}/${semester}/courses.json`);
-  if (coursesRes.ok) { coursesData = await coursesRes.json(); }
-
+  // Load index for navigation
+  const index = buildTimetableIndex();
+  const batches = Object.keys(index.batches).sort().reverse();
+  const sections = Object.keys(index.batches[batch] || {}).sort();
+  const semesters = index.batches[batch]?.[section] || [];
 
   return (
-    <div className="flex  flex-col mt-4 items-center  min-h-screen">
-
-      <div className='flex flex-row items-center justify-evenly w-[640px] mb-2'>
-
-        <PageNavigator batch={batch} section={section} semester={semester} batches={Batches} sections={ClassesData.find(b => b.ClassOf === batch)?.Classes || []} />
-
-
-      </div>
-      {/* Main sqr box */}
-      <div id="mainbox" className="w-[640px] h-[640px] outline-1 outline-offset-[0px]">
-        <TimeScale />
-        <TimeSlots />
-        <TimeTable TimetableData={TimeTableData} />
-        <FacultyInfo coursesData={coursesData} />
-
-      </div>
-    </div >
+    <div className="min-h-screen bg-background">
+      {/* Header with navigation */}
+      <TimetableHeader 
+        batch={batch} 
+        section={section} 
+        semester={semester}
+        batches={batches}
+        sections={sections}
+        semesters={semesters}
+      />
+      
+      {/* Main content */}
+      <main className="container mx-auto px-4 py-6">
+        <TimetableGrid timetable={timetable} />
+      </main>
+    </div>
   );
+}
+
+// Generate static params for all available timetables
+export async function generateStaticParams() {
+  const index = buildTimetableIndex();
+  const params: { batch: string; section: string; semester: string }[] = [];
+  
+  for (const [batch, sections] of Object.entries(index.batches)) {
+    for (const [section, semesters] of Object.entries(sections)) {
+      for (const semester of semesters) {
+        params.push({ batch, section, semester });
+      }
+    }
+  }
+  
+  return params;
 }
