@@ -35,6 +35,7 @@ export default async function Page({ params }: {
         batches={batches}
         sections={sections}
         semesters={semesters}
+        fullIndex={index}
       />
       
       {/* Main content */}

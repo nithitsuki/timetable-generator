@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import ModeToggle from '@/components/comp-130';
 import {
   Select,
@@ -12,6 +13,17 @@ import {
 import { Button } from '@/components/ui/button';
 import { TimetableIndex } from '@/lib/types';
 import { cn } from '@/lib/utils';
+import { 
+  getMyClass, 
+  setMyClass, 
+  getFavourites, 
+  removeFavourite,
+  formatClassLabel,
+  formatShortLabel,
+  ClassPreference,
+  FavouriteClass 
+} from '@/lib/preferences';
+import { Star, X, Calendar, Heart } from 'lucide-react';
 
 export default function HomePage() {
   const router = useRouter();
@@ -22,6 +34,24 @@ export default function HomePage() {
   const [batch, setBatch] = useState<string>('');
   const [section, setSection] = useState<string>('');
   const [semester, setSemester] = useState<string>('');
+  
+  // User preferences
+  const [myClass, setMyClassState] = useState<ClassPreference | null>(null);
+  const [favourites, setFavourites] = useState<FavouriteClass[]>([]);
+  const [showSetupPrompt, setShowSetupPrompt] = useState(false);
+
+  // Load preferences from localStorage
+  useEffect(() => {
+    const saved = getMyClass();
+    const favs = getFavourites();
+    setMyClassState(saved);
+    setFavourites(favs);
+    
+    // Show setup prompt if no class is saved
+    if (!saved) {
+      setShowSetupPrompt(true);
+    }
+  }, []);
 
   // Fetch the timetable index
   useEffect(() => {
@@ -88,9 +118,28 @@ export default function HomePage() {
     }
   };
 
+  const handleSaveAsMyClass = () => {
+    if (batch && section && semester) {
+      const pref: ClassPreference = { batch, section, semester };
+      setMyClass(pref);
+      setMyClassState(pref);
+      setShowSetupPrompt(false);
+    }
+  };
+
+  const handleRemoveFavourite = (fav: FavouriteClass) => {
+    removeFavourite(fav.batch, fav.section, fav.semester);
+    setFavourites(getFavourites());
+  };
+
   // Calculate graduation year for display
   const getGradYear = (batchYear: string) => {
     return parseInt(batchYear) + 4;
+  };
+
+  // Check if a timetable exists in the index
+  const timetableExists = (b: string, s: string, sem: string): boolean => {
+    return index?.batches[b]?.[s]?.includes(sem) ?? false;
   };
 
   if (loading) {
@@ -123,24 +172,97 @@ export default function HomePage() {
       </div>
 
       {/* Header */}
-      <div className="text-center mb-8 md:mb-12 mt-8">
+      <div className="text-center mb-6 md:mb-8 mt-8">
         <h1 className="text-3xl md:text-5xl font-bold text-foreground mb-3 tracking-tight">
           Timetable Viewer
         </h1>
-        <p className="text-base md:text-lg text-muted-foreground mb-4">
+        <p className="text-base md:text-lg text-muted-foreground">
           Select your batch, section, and semester
         </p>
-        {/* Quick access to current selection */}
-        {batch && section && semester && (
-          <Button 
-            variant="outline" 
-            onClick={handleGo}
-            className="mt-2"
-          >
-            📅 Quick View: {batch} {section.toUpperCase()} - Sem {semester}
-          </Button>
-        )}
       </div>
+
+      {/* Quick Access Section - My Class & Favourites */}
+      {(myClass || favourites.length > 0) && (
+        <div className="w-full max-w-3xl mb-8">
+          <div className="bg-card border border-border rounded-lg p-4 md:p-6">
+            <h2 className="text-sm font-semibold text-muted-foreground mb-4 uppercase tracking-wide flex items-center gap-2">
+              <Calendar className="h-4 w-4" />
+              Quick Access
+            </h2>
+            
+            <div className="flex flex-wrap gap-3">
+              {/* My Class Button */}
+              {myClass && timetableExists(myClass.batch, myClass.section, myClass.semester) && (
+                <Link href={`/${myClass.batch}/${myClass.section}/${myClass.semester}`}>
+                  <Button 
+                    size="lg" 
+                    className="gap-2 bg-primary hover:bg-primary/90"
+                  >
+                    <Calendar className="h-4 w-4" />
+                    View Your Timetable
+                  </Button>
+                </Link>
+              )}
+              
+              {/* Favourite Classes */}
+              {favourites.map((fav) => (
+                timetableExists(fav.batch, fav.section, fav.semester) && (
+                  <div key={fav.id} className="flex items-center gap-1">
+                    <Link href={`/${fav.batch}/${fav.section}/${fav.semester}`}>
+                      <Button variant="outline" size="lg" className="gap-2">
+                        <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
+                        {formatShortLabel(fav.section, fav.semester)}
+                      </Button>
+                    </Link>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                      onClick={() => handleRemoveFavourite(fav)}
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                )
+              ))}
+            </div>
+            
+            {/* Show saved class info */}
+            {myClass && (
+              <p className="text-sm text-muted-foreground mt-3">
+                Your class: {formatClassLabel(myClass.batch, myClass.section, myClass.semester)}
+              </p>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Setup Prompt for First-time Users */}
+      {showSetupPrompt && !myClass && (
+        <div className="w-full max-w-3xl mb-8">
+          <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 md:p-6">
+            <div className="flex items-start gap-3">
+              <Heart className="h-5 w-5 text-primary mt-0.5" />
+              <div className="flex-1">
+                <h3 className="font-semibold text-foreground mb-1">
+                  Set up your class
+                </h3>
+                <p className="text-sm text-muted-foreground mb-3">
+                  Select your batch, section, and semester below, then click &quot;Save as My Class&quot; for quick access next time.
+                </p>
+              </div>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="shrink-0"
+                onClick={() => setShowSetupPrompt(false)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Selection Area */}
       <div className="w-full max-w-5xl">
@@ -229,8 +351,17 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* View Button */}
-        <div className="flex justify-center mt-8">
+        {/* No semesters available message */}
+        {sections.length > 0 && semesters.length === 0 && (
+          <div className="mb-8 p-4 bg-muted/50 rounded-lg">
+            <p className="text-muted-foreground text-center">
+              No timetables available for this section yet.
+            </p>
+          </div>
+        )}
+
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row justify-center gap-3 mt-8">
           <Button 
             size="lg"
             onClick={handleGo}
@@ -239,6 +370,28 @@ export default function HomePage() {
           >
             View Timetable →
           </Button>
+          
+          {/* Save as My Class button */}
+          {batch && section && semester && (
+            <Button 
+              size="lg"
+              variant="outline"
+              onClick={handleSaveAsMyClass}
+              className="min-w-[200px] text-lg h-12 gap-2"
+            >
+              <Heart className={cn(
+                "h-5 w-5",
+                myClass?.batch === batch && 
+                myClass?.section === section && 
+                myClass?.semester === semester && "fill-primary text-primary"
+              )} />
+              {myClass?.batch === batch && 
+               myClass?.section === section && 
+               myClass?.semester === semester 
+                ? "This is Your Class" 
+                : "Save as My Class"}
+            </Button>
+          )}
         </div>
       </div>
 

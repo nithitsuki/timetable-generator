@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import ModeToggle from '@/components/comp-130';
 import {
@@ -9,8 +10,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from '@/components/ui/button';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, Star, Heart } from 'lucide-react';
 import Link from 'next/link';
+import { 
+  isFavourite, 
+  toggleFavourite, 
+  getMyClass,
+  setMyClass,
+  ClassPreference
+} from '@/lib/preferences';
+import { TimetableIndex } from '@/lib/types';
 
 interface TimetableHeaderProps {
   batch: string;
@@ -19,6 +28,7 @@ interface TimetableHeaderProps {
   batches: string[];
   sections: string[];
   semesters: string[];
+  fullIndex?: TimetableIndex;
 }
 
 export default function TimetableHeader({
@@ -28,15 +38,83 @@ export default function TimetableHeader({
   batches,
   sections,
   semesters,
+  fullIndex,
 }: TimetableHeaderProps) {
   const router = useRouter();
+  const [isFav, setIsFav] = useState(false);
+  const [isMyClass, setIsMyClass] = useState(false);
+
+  useEffect(() => {
+    setIsFav(isFavourite(batch, section, semester));
+    const myClass = getMyClass();
+    setIsMyClass(
+      myClass?.batch === batch && 
+      myClass?.section === section && 
+      myClass?.semester === semester
+    );
+  }, [batch, section, semester]);
+
+  const handleToggleFavourite = () => {
+    const newState = toggleFavourite(batch, section, semester);
+    setIsFav(newState);
+  };
+
+  const handleSetAsMyClass = () => {
+    const pref: ClassPreference = { batch, section, semester };
+    setMyClass(pref);
+    setIsMyClass(true);
+  };
+
+  // Helper to find a valid route when changing selection
+  const findValidSemester = (targetBatch: string, targetSection: string): string | null => {
+    if (fullIndex?.batches[targetBatch]?.[targetSection]?.length) {
+      const sems = fullIndex.batches[targetBatch][targetSection];
+      // Try to find the same semester, otherwise use the latest
+      if (sems.includes(semester)) return semester;
+      return sems[sems.length - 1];
+    }
+    return null;
+  };
+
+  const findValidSection = (targetBatch: string): { section: string; semester: string } | null => {
+    if (!fullIndex?.batches[targetBatch]) return null;
+    const sectionsForBatch = Object.keys(fullIndex.batches[targetBatch]).sort();
+    
+    // Try to keep current section if available
+    if (sectionsForBatch.includes(section)) {
+      const sem = findValidSemester(targetBatch, section);
+      if (sem) return { section, semester: sem };
+    }
+    
+    // Otherwise, find first section with valid semesters
+    for (const sec of sectionsForBatch) {
+      const sem = findValidSemester(targetBatch, sec);
+      if (sem) return { section: sec, semester: sem };
+    }
+    return null;
+  };
 
   const handleBatchChange = (newBatch: string) => {
-    // Navigate to new batch with first available section and semester
+    if (fullIndex) {
+      const valid = findValidSection(newBatch);
+      if (valid) {
+        router.push(`/${newBatch}/${valid.section}/${valid.semester}`);
+        return;
+      }
+    }
+    // Fallback to current section/semester (may fail, but better than nothing)
     router.push(`/${newBatch}/${sections[0] || section}/${semester}`);
   };
 
   const handleSectionChange = (newSection: string) => {
+    if (fullIndex) {
+      const sem = findValidSemester(batch, newSection);
+      if (sem) {
+        router.push(`/${batch}/${newSection}/${sem}`);
+        return;
+      }
+    }
+    // Fallback
     router.push(`/${batch}/${newSection}/${semester}`);
   };
 
@@ -107,6 +185,28 @@ export default function TimetableHeader({
                 ))}
               </SelectContent>
             </Select>
+
+            {/* Favourite button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleToggleFavourite}
+              title={isFav ? "Remove from favourites" : "Add to favourites"}
+              className="shrink-0"
+            >
+              <Star className={`h-5 w-5 ${isFav ? 'fill-yellow-500 text-yellow-500' : ''}`} />
+            </Button>
+
+            {/* Set as my class button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleSetAsMyClass}
+              title={isMyClass ? "This is your class" : "Set as my class"}
+              className="shrink-0"
+            >
+              <Heart className={`h-5 w-5 ${isMyClass ? 'fill-primary text-primary' : ''}`} />
+            </Button>
 
             <div className="ml-2">
               <ModeToggle />
