@@ -1,13 +1,15 @@
 "use client";
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Timetable, DayOfWeek, parseSlotRef, resolveSlot } from '@/lib/types';
 import { cn } from '@/lib/utils';
+import { Maximize2, Minimize2 } from 'lucide-react';
 
 interface TimetableGridProps {
   timetable: Timetable;
 }
 
 const DAYS: DayOfWeek[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 // Theory slot timings (50 min each)
 const THEORY_SLOTS = [
@@ -88,6 +90,35 @@ export default function TimetableGrid({ timetable }: TimetableGridProps) {
     }
     return initial;
   });
+
+  // Compact view for mobile - default to false initially to match server
+  const [isCompactView, setIsCompactView] = useState(false);
+
+  // Set default based on screen size on mount
+  useEffect(() => {
+    // Check if mobile (<640px)
+    if (window.innerWidth < 640) {
+      setIsCompactView(true);
+    }
+  }, []);
+
+  // Current time for the time indicator line
+  const [currentTime, setCurrentTime] = useState<string | null>(null);
+  const [currentDayName, setCurrentDayName] = useState<string | null>(null);
+
+  // Update current time every minute
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2, '0');
+      const mins = now.getMinutes().toString().padStart(2, '0');
+      setCurrentTime(`${hours}:${mins}`);
+      setCurrentDayName(DAY_NAMES[now.getDay()]);
+    };
+    updateTime();
+    const interval = setInterval(updateTime, 60000); // Update every minute
+    return () => clearInterval(interval);
+  }, []);
 
   // Create a stable color map for subjects
   const subjectColorMap = useMemo(() => {
@@ -192,40 +223,84 @@ export default function TimetableGrid({ timetable }: TimetableGridProps) {
     return markers;
   }, []);
 
+  // Calculate current time position percentage
+  const currentTimePercent = useMemo(() => {
+    if (!currentTime) return null;
+    const percent = timeToPercent(currentTime);
+    // Only show if within timeline bounds
+    if (percent >= 0 && percent <= 100) {
+      return percent;
+    }
+    return null;
+  }, [currentTime]);
+
   return (
     <div className="w-full max-w-6xl mx-auto">
-      {/* Config Selectors */}
-      {Object.keys(timetable.config).length > 0 && (
-        <div className="mb-6 flex flex-wrap gap-4 justify-center">
-          {Object.entries(timetable.config).map(([key, config]) => (
-            <div key={key} className="flex items-center gap-2">
-              <label className="text-sm font-medium text-foreground">
-                {config.label}:
-              </label>
-              <select
-                value={configSelections[key] || ''}
-                onChange={(e) => handleConfigChange(key, e.target.value)}
-                className="px-3 py-1.5 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-              >
-                {config.values.map((v) => (
-                  <option key={v.id} value={v.id}>
-                    {v.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          ))}
-        </div>
-      )}
+      {/* View Toggle + Config Selectors */}
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
+        {/* Compact view toggle - only on mobile */}
+        <button
+          onClick={() => setIsCompactView(!isCompactView)}
+          className="sm:hidden flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-muted/50 text-sm font-medium hover:bg-muted transition-colors"
+        >
+          {isCompactView ? (
+            <>
+              <Maximize2 className="h-4 w-4" />
+              Detailed View
+            </>
+          ) : (
+            <>
+              <Minimize2 className="h-4 w-4" />
+              Compact View
+            </>
+          )}
+        </button>
+
+        {/* Config Selectors */}
+        {Object.keys(timetable.config).length > 0 && (
+          <div className="flex flex-wrap gap-4 justify-center sm:justify-end flex-1">
+            {Object.entries(timetable.config).map(([key, config]) => (
+              <div key={key} className="flex items-center gap-2">
+                <label className="text-sm font-medium text-foreground">
+                  {config.label}:
+                </label>
+                <select
+                  value={configSelections[key] || ''}
+                  onChange={(e) => handleConfigChange(key, e.target.value)}
+                  className="px-3 py-1.5 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                >
+                  {config.values.map((v) => (
+                    <option key={v.id} value={v.id}>
+                      {v.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Time-scaled Timetable */}
-      <div className="overflow-x-auto rounded-lg border border-border shadow-md bg-background">
+      <div className={cn(
+        "rounded-lg border border-border shadow-md bg-background",
+        isCompactView ? "overflow-hidden" : "overflow-x-auto"
+      )}>
         {/* Timeline Header */}
-        <div className="flex border-b border-border">
-          <div className="w-20 shrink-0 p-2 bg-muted font-semibold text-sm text-foreground flex items-center justify-center border-r border-border">
+        <div className={cn(
+          "flex border-b border-border",
+          isCompactView ? "" : "min-w-[600px]"
+        )}>
+          <div className={cn(
+            "shrink-0 p-2 bg-muted font-semibold text-foreground flex items-center justify-center border-r border-border",
+            isCompactView ? "w-10 text-xs" : "w-16 md:w-20 text-sm"
+          )}>
             Day
           </div>
-          <div className="flex-1 relative h-12 bg-muted">
+          <div className={cn(
+            "flex-1 relative bg-muted",
+            isCompactView ? "h-8" : "h-10 md:h-12"
+          )}>
             {/* Time markers */}
             {timeMarkers.map(({ time, percent }) => (
               <div
@@ -233,7 +308,10 @@ export default function TimetableGrid({ timetable }: TimetableGridProps) {
                 className="absolute top-0 h-full flex flex-col items-center justify-center"
                 style={{ left: `${percent}%`, transform: 'translateX(-50%)' }}
               >
-                <span className="text-xs text-muted-foreground">{time}</span>
+                <span className={cn(
+                  "text-muted-foreground whitespace-nowrap",
+                  isCompactView ? "text-[8px]" : "text-[10px] md:text-xs"
+                )}>{isCompactView ? time.slice(0, 2) : time}</span>
               </div>
             ))}
             {/* Break indicators */}
@@ -246,7 +324,10 @@ export default function TimetableGrid({ timetable }: TimetableGridProps) {
                   className="absolute top-1/2 -translate-y-1/2 bg-muted-foreground/20 rounded flex items-center justify-center"
                   style={{ left: `${left}%`, width: `${width}%`, height: '60%' }}
                 >
-                  <span className="text-[10px] text-muted-foreground font-medium">{brk.label}</span>
+                  <span className={cn(
+                    "text-muted-foreground font-medium",
+                    isCompactView ? "text-[6px]" : "text-[8px] md:text-[10px]"
+                  )}>{isCompactView ? brk.label[0] : brk.label}</span>
                 </div>
               );
             })}
@@ -256,16 +337,27 @@ export default function TimetableGrid({ timetable }: TimetableGridProps) {
         {/* Day Rows */}
         {DAYS.map((day) => {
           const dayData = processedSchedule[day] || [];
+          const isCurrentDay = currentDayName === day;
 
           return (
-            <div key={day} className="flex border-b border-border last:border-b-0">
+            <div key={day} className={cn(
+              "flex border-b border-border last:border-b-0",
+              isCompactView ? "" : "min-w-[600px]"
+            )}>
               {/* Day label */}
-              <div className="w-20 shrink-0 p-2 bg-muted/50 font-medium text-sm text-foreground flex items-center justify-center border-r border-border">
-                {day.slice(0, 3)}
+              <div className={cn(
+                "shrink-0 p-2 bg-muted/50 font-medium text-foreground flex items-center justify-center border-r border-border",
+                isCompactView ? "w-10 text-xs" : "w-16 md:w-20 text-sm",
+                isCurrentDay && "bg-blue-100 dark:bg-blue-900/30"
+              )}>
+                {isCompactView ? day.slice(0, 1) : day.slice(0, 3)}
               </div>
 
               {/* Timeline with slots */}
-              <div className="flex-1 relative h-16 min-h-[64px]">
+              <div className={cn(
+                "flex-1 relative",
+                isCompactView ? "h-10 min-h-[40px]" : "h-14 md:h-16 min-h-[56px] md:min-h-[64px]"
+              )}>
                 {/* Break background shading */}
                 {BREAKS.map((brk, i) => {
                   const left = timeToPercent(brk.start);
@@ -278,6 +370,16 @@ export default function TimetableGrid({ timetable }: TimetableGridProps) {
                     />
                   );
                 })}
+
+                {/* Current time indicator line */}
+                {isCurrentDay && currentTimePercent !== null && (
+                  <div
+                    className="absolute top-0 h-full w-0.5 bg-blue-500 z-20"
+                    style={{ left: `${currentTimePercent}%` }}
+                  >
+                    <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-blue-500" />
+                  </div>
+                )}
 
                 {/* Slot blocks */}
                 {dayData.map((slot, idx) => {
@@ -303,10 +405,13 @@ export default function TimetableGrid({ timetable }: TimetableGridProps) {
                       style={{ left: `${left}%`, width: `${width}%` }}
                       title={subject ? `${subject.name}\n${slot.startTime} - ${slot.endTime}` : ''}
                     >
-                      <span className="font-semibold text-xs sm:text-sm text-foreground truncate px-1">
+                      <span className={cn(
+                        "font-semibold text-foreground truncate px-1",
+                        isCompactView ? "text-[8px]" : "text-xs sm:text-sm"
+                      )}>
                         {subject?.shortName || slot.slotRef}
                       </span>
-                      {slot.isLab && (
+                      {slot.isLab && !isCompactView && (
                         <span className="text-[10px] px-1 py-0.5 rounded bg-amber-200 dark:bg-amber-800 text-amber-900 dark:text-amber-100">
                           LAB
                         </span>

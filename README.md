@@ -1,24 +1,31 @@
-# timetable-icon-generator
-The timetables at my uni, Amrita Vishwa Vidyapeetham, are functional, but I thought they could be a lot better. So, I made this project to turn the standard rectangular schedule into a compact, square icon. It's configured with simple JSON files and even scales the class blocks to show how long they actually are (rather than confusingly using a simple table for complex time-slots).
-
-This was mainly made for my own use, especially since the class group pfp is the timetable for quick access, but I thought it might be useful to others too, so I'm sharing it here.
-
-(I've also learnt a lot about Next.js app router and JSON objects, so that's a bonus!)
-
-
-## My Version:
-<img src="./public/screenshot-wa.png" alt="Timetable Screenshot" width="300" height="300">
-
-## Old Version:
-<img src="./public/old-table.png" alt="Old Timetable Screenshot" width="600" height="300">
+# ATU - Amrita Timetable Utility
+The timetables at Amrita Vishwa Vidyapeetham are functional, but ATU makes them beautiful, accessible, and powerful. It turns standard schedules into compact, interactive views that scale class blocks to their actual duration.
 
 ## ✨ Features
 
-- **Easy Setup with JSON**: You can set up your courses, times, and schedule with some simple JSON files.
-- **Compact Icon View**: It squishes the whole timetable into a square, which is great for a quick look.
-- **Accurate Class Durations**: The blocks for each class are sized based on how long they are,\
-so you can see the difference between a 10, 20, and a 80 minute break at a glance.
+- **Personalized Access**: Set "Your Class" for one-tap access to your schedule.
+- **Free Class Finder**: Find which classes are empty at any given time (Theory or Lab slots), with a **"Just No Lab"** option to ignore theory.
+- **Common Free Time**: Compare your schedule with friends to find mutual free periods.
+- **Smart Visuals**:
+  - **Accurate Durations**: Blocks are sized based on actual minutes.
+  - **Current Time Indicator**: A live indicator shows where you are in the day.
+  - **Compact Mode**: A mobile-first view that fits the whole week into a single screen.
+- **Registry Integration**: Automatically stays up to date with the [community timetable registry](https://github.com/amritadottown/timetable-registry).
+- **Dark Mode**: Fully supports desktop and mobile dark themes.
 
 ## 🚀 How to Use It
 
-For all the details on how to get this running and set up your own schedule, check out the [CONFIG.md](./CONFIG.md) file.
+1. **Pick Your Class**: Go to "All Timetables", find your batch/section, and click "Set as Mine".
+2. **Find Free Slots**: Use the "Free Class Finder" to spot empty halls for studying or hanging out.
+3. **Sync with Friends**: Use "Common Free Time" to coordinate meetups.
+
+For developers looking to host their own or contribute, check out [CONFIG.md](./CONFIG.md).
+
+
+## Comparisons
+
+### ATU View:
+<img src="./public/screenshot-wa.png" alt="ATU Screenshot" width="300" height="300">
+
+### Legacy View:
+<img src="./public/old-table.png" alt="Old Timetable Screenshot" width="600" height="300">

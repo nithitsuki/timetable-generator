@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Timetable Generator",
-  description: "Better version of Amrita timetables.",
+  title: "ATU - Amrita Timetable Utility",
+  description: "Beautiful, accessible, and powerful timetables for Amrita university students.",
 };
 
 export default function RootLayout({
