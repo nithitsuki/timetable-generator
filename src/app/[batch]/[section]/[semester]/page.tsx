@@ -40,7 +40,12 @@ export default async function Page({ params }: {
       
       {/* Main content */}
       <main className="container mx-auto px-4 py-6">
-        <TimetableGrid timetable={timetable} />
+        <TimetableGrid 
+          timetable={timetable} 
+          batch={batch}
+          section={section}
+          semester={semester}
+        />
       </main>
     </div>
   );

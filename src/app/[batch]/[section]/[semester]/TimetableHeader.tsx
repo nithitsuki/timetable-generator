@@ -129,10 +129,11 @@ export default function TimetableHeader({
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Back button and title */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <Link href="/">
-              <Button variant="ghost" size="icon" className="shrink-0">
+              <Button variant="ghost" size="sm" className="shrink-0 gap-1 px-2 sm:px-3">
                 <ChevronLeft className="h-5 w-5" />
+                <span className="sm:hidden">Home</span>
               </Button>
             </Link>
             <div className="hidden sm:block">
@@ -143,6 +144,7 @@ export default function TimetableHeader({
                 Class of {getGradYear(batch)}
               </p>
             </div>
+            
           </div>
 
           {/* Navigation selectors */}

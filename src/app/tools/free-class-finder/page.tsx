@@ -2,15 +2,19 @@
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import Link from 'next/link';
-import { format } from 'date-fns';
-import { Calendar as CalendarIcon, Clock, ArrowLeft, MapPin } from 'lucide-react';
+import { Clock, ArrowLeft, MapPin, Filter, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { 
   THEORY_SLOTS, 
   LAB_SLOTS,
@@ -21,20 +25,24 @@ import {
   getSubjectAtSlot,
   formatShortLabel,
 } from '@/lib/timetable-utils';
+import { DayOfWeek } from '@/lib/types';
 import { TimetableEntry, TimetablesResponse } from '@/app/api/timetables/route';
 
 export default function FreeClassFinderPage() {
   const [timetables, setTimetables] = useState<TimetableEntry[]>([]);
   const [loading, setLoading] = useState(true);
   
-  // Date and time selection - defaults to NOW
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  // Day of week selection (Mon-Fri)
+  const [selectedDay, setSelectedDay] = useState<DayOfWeek>('Monday');
   const [selectedSlot, setSelectedSlot] = useState<number | null>(null);
   
   // Lab slot selection - separate from theory slot
   // null = no lab slot selected, 0/1/2 = morning/midday/afternoon
   const [selectedLabSlot, setSelectedLabSlot] = useState<number | null>(null);
   const [justNoLab, setJustNoLab] = useState(false);
+  
+  // Semester filter
+  const [semesterFilter, setSemesterFilter] = useState<string>('all');
 
   // Fetch all timetables on mount
   useEffect(() => {
@@ -50,19 +58,35 @@ export default function FreeClassFinderPage() {
       });
   }, []);
 
-  // Auto-detect current slot on mount
+  // Auto-detect current day and slot on mount
   useEffect(() => {
     const now = new Date();
     const time = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
     const slot = getCurrentSlotIndex(time);
     setSelectedSlot(slot ?? 0); // Default to first slot if outside hours
+    
+    // Set day based on current day
+    const currentDay = getDayOfWeek(now);
+    if (currentDay && DAYS.includes(currentDay)) {
+      setSelectedDay(currentDay);
+    }
   }, []);
 
-  // Get day of week from selected date
-  const dayOfWeek = useMemo(() => {
-    return getDayOfWeek(selectedDate);
-  }, [selectedDate]);
-
+  // Use selected day directly instead of deriving from date
+  const dayOfWeek = selectedDay;
+  
+  // Get unique semesters for filtering
+  const availableSemesters = useMemo(() => {
+    const sems = new Set(timetables.map(t => t.semester));
+    return Array.from(sems).sort((a, b) => Number(a) - Number(b));
+  }, [timetables]);
+  
+  // Filter timetables by semester
+  const filteredTimetables = useMemo(() => {
+    if (semesterFilter === 'all') return timetables;
+    return timetables.filter(t => t.semester === semesterFilter);
+  }, [timetables, semesterFilter]);
+  
   // Get which theory slots are equivalent to a lab slot
   const getEquivalentTheorySlots = (labIndex: number): number[] => {
     return LAB_SLOTS[labIndex]?.indices || [];
@@ -92,7 +116,7 @@ export default function FreeClassFinderPage() {
     if (selectedLabSlot !== null) {
       const equivalentSlots = getEquivalentTheorySlots(selectedLabSlot);
       
-      return timetables.filter(entry => {
+      return filteredTimetables.filter(entry => {
         if (justNoLab) {
           // Must NOT have lab in any equivalent slot (theory allowed)
           return equivalentSlots.every(slotIdx => !isLabAtSlot(entry, dayOfWeek, slotIdx));
@@ -110,13 +134,13 @@ export default function FreeClassFinderPage() {
     // Theory slot mode: check just that slot
     if (selectedSlot === null) return [];
     
-    return timetables.filter(entry => {
+    return filteredTimetables.filter(entry => {
       return isClassFreeAtSlot(entry.timetable, dayOfWeek, selectedSlot);
     }).map(entry => ({
       ...entry,
       shortLabel: formatShortLabel(entry.section, entry.semester),
     }));
-  }, [timetables, dayOfWeek, selectedSlot, selectedLabSlot, justNoLab, isLabAtSlot]);
+  }, [filteredTimetables, dayOfWeek, selectedSlot, selectedLabSlot, justNoLab, isLabAtSlot]);
 
   // Classes that are busy
   const busyClasses = useMemo(() => {
@@ -127,7 +151,7 @@ export default function FreeClassFinderPage() {
     if (selectedLabSlot !== null) {
       const equivalentSlots = getEquivalentTheorySlots(selectedLabSlot);
       
-      return timetables.filter(entry => {
+      return filteredTimetables.filter(entry => {
         if (justNoLab) {
           // Has a lab in any equivalent slot
           return equivalentSlots.some(slotIdx => isLabAtSlot(entry, dayOfWeek, slotIdx));
@@ -155,7 +179,7 @@ export default function FreeClassFinderPage() {
     // Theory slot mode
     if (selectedSlot === null) return [];
     
-    return timetables.filter(entry => {
+    return filteredTimetables.filter(entry => {
       return !isClassFreeAtSlot(entry.timetable, dayOfWeek, selectedSlot);
     }).map(entry => {
       const subject = getSubjectAtSlot(entry.timetable, dayOfWeek, selectedSlot);
@@ -165,9 +189,7 @@ export default function FreeClassFinderPage() {
         subject,
       };
     });
-  }, [timetables, dayOfWeek, selectedSlot, selectedLabSlot, justNoLab, isLabAtSlot]);
-
-  const isWeekend = dayOfWeek && !DAYS.includes(dayOfWeek);
+  }, [filteredTimetables, dayOfWeek, selectedSlot, selectedLabSlot, justNoLab, isLabAtSlot]);
 
   if (loading) {
     return (
@@ -193,57 +215,71 @@ export default function FreeClassFinderPage() {
       </header>
 
       <main className="container mx-auto px-4 py-6 max-w-2xl">
-        {/* Date & Slot Selection */}
-        <div className="flex flex-wrap gap-3 mb-6">
-          {/* Date Picker */}
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="outline" className="gap-2">
-                <CalendarIcon className="h-4 w-4" />
-                {format(selectedDate, "EEE, MMM d")}
+        {/* Day Selection & Filters */}
+        <div className="flex flex-wrap items-center gap-3 mb-6">
+          {/* Day Picker */}
+          <div className="flex gap-1">
+            {DAYS.map((day) => (
+              <Button
+                key={day}
+                variant={selectedDay === day ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedDay(day)}
+                className="px-3"
+              >
+                {day.slice(0, 3)}
               </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                mode="single"
-                selected={selectedDate}
-                onSelect={(date) => date && setSelectedDate(date)}
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover>
+            ))}
+          </div>
 
           {/* Now Button */}
           <Button 
-            variant="outline" 
+            variant="outline"
+            size="sm"
             onClick={() => {
               const now = new Date();
-              setSelectedDate(now);
+              const currentDay = getDayOfWeek(now);
+              if (currentDay && DAYS.includes(currentDay)) {
+                setSelectedDay(currentDay);
+              }
               const time = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
               setSelectedSlot(getCurrentSlotIndex(time) ?? 0);
               setSelectedLabSlot(null);
               setJustNoLab(false);
             }}
           >
-            <Clock className="h-4 w-4 mr-2" />
+            <Clock className="h-4 w-4 mr-1" />
             Now
           </Button>
+          
+          {/* Semester Filter */}
+          <Select value={semesterFilter} onValueChange={setSemesterFilter}>
+            <SelectTrigger className="w-[120px]">
+              <Filter className="h-4 w-4 mr-2" />
+              <SelectValue placeholder="Semester" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Sems</SelectItem>
+              {availableSemesters.map(sem => (
+                <SelectItem key={sem} value={sem}>Sem {sem}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         {/* Period Selection */}
-        {!isWeekend && (
-          <div className="mb-8 space-y-6">
-            {/* Theory Periods */}
-            <div>
-              <p className="text-sm font-medium text-muted-foreground mb-3">Theory Periods (50 min)</p>
-              <div className="grid grid-cols-4 sm:grid-cols-7 gap-2">
-                {THEORY_SLOTS.map((slot, index) => {
-                  const isSelected = selectedSlot === index && selectedLabSlot === null;
-                  const isHighlighted = isTheoryHighlighted(index);
-                  
-                  return (
-                    <button
-                      key={index}
+        <div className="mb-8 space-y-6">
+          {/* Theory Periods */}
+          <div>
+            <p className="text-sm font-medium text-muted-foreground mb-3">Theory Periods (50 min)</p>
+            <div className="grid grid-cols-4 sm:grid-cols-7 gap-2">
+              {THEORY_SLOTS.map((slot, index) => {
+                const isSelected = selectedSlot === index && selectedLabSlot === null;
+                const isHighlighted = isTheoryHighlighted(index);
+                
+                return (
+                  <button
+                    key={index}
                       onClick={() => {
                         setSelectedSlot(index);
                         setSelectedLabSlot(null); // Clear lab selection when picking theory
@@ -282,7 +318,7 @@ export default function FreeClassFinderPage() {
                     onCheckedChange={setJustNoLab}
                   />
                   <Label htmlFor="just-no-lab" className="text-xs text-muted-foreground">
-                    Just no lab
+                    Just not lab
                   </Label>
                 </div>
               </div>
@@ -317,29 +353,19 @@ export default function FreeClassFinderPage() {
               </div>
             </div>
           </div>
-        )}
 
         {/* Results */}
-        {isWeekend ? (
-          <Card>
-            <CardContent className="py-12 text-center">
-              <p className="text-lg text-muted-foreground">
-                It&apos;s {dayOfWeek}! No classes 🎉
-              </p>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="space-y-6">
-            {/* Free Classes */}
-            <section>
-              <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3 flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-green-500" />
-                Free ({freeClasses.length})
-              </h2>
-              {freeClasses.length > 0 ? (
-                <div className="flex flex-wrap gap-2">
-                  {freeClasses.map((entry) => (
-                    <Link 
+        <div className="space-y-6">
+          {/* Free Classes */}
+          <section>
+            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3 flex items-center gap-2">
+              <MapPin className="h-4 w-4 text-green-500" />
+              Free ({freeClasses.length})
+            </h2>
+            {freeClasses.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {freeClasses.map((entry) => (
+                  <Link 
                       key={`${entry.batch}-${entry.section}-${entry.semester}`}
                       href={`/${entry.batch}/${entry.section}/${entry.semester}`}
                     >
@@ -386,7 +412,6 @@ export default function FreeClassFinderPage() {
               )}
             </section>
           </div>
-        )}
       </main>
     </div>
   );

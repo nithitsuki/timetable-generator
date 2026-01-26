@@ -1,4 +1,4 @@
-import { Timetable, DayOfWeek } from './types';
+import { Timetable, DayOfWeek, resolveSlot } from './types';
 
 // Theory slot timings (50 min each)
 export const THEORY_SLOTS = [
@@ -207,4 +207,77 @@ export function formatClassLabel(batch: string, section: string, semester: strin
 // Format short class label
 export function formatShortLabel(section: string, semester: string): string {
   return `${section.toUpperCase()} S${semester}`;
+}
+
+// Check if a timetable has batch configuration
+export function hasBatchConfig(timetable: Timetable): boolean {
+  return !!timetable.config?.batch;
+}
+
+// Get batch options from timetable config
+export function getBatchOptions(timetable: Timetable): { label: string; id: string }[] {
+  return timetable.config?.batch?.values || [];
+}
+
+// Check if a class is free at a specific slot, with config selections for proper resolution
+export function isClassFreeAtSlotWithConfig(
+  timetable: Timetable,
+  day: DayOfWeek,
+  slotIndex: number,
+  configSelections: Record<string, string>
+): boolean {
+  const schedule = getScheduleForDay(timetable, day);
+  
+  if (slotIndex < 0 || slotIndex >= schedule.length) {
+    return true;
+  }
+  
+  const slotRef = schedule[slotIndex];
+  
+  // Resolve slot if it's a slot reference
+  const resolved = resolveSlot(slotRef, timetable, configSelections);
+  
+  if (resolved === null) {
+    // No match for config - treat as free
+    return true;
+  }
+  
+  return isSlotFree(resolved);
+}
+
+// Get subject at slot with config selections
+export function getSubjectAtSlotWithConfig(
+  timetable: Timetable,
+  day: DayOfWeek,
+  slotIndex: number,
+  configSelections: Record<string, string>
+): { name: string; shortName: string; isLab: boolean } | null {
+  const schedule = getScheduleForDay(timetable, day);
+  
+  if (slotIndex < 0 || slotIndex >= schedule.length) {
+    return null;
+  }
+  
+  const slotRef = schedule[slotIndex];
+  
+  // Resolve slot if it's a slot reference
+  const resolved = resolveSlot(slotRef, timetable, configSelections);
+  
+  if (resolved === null || isSlotFree(resolved)) {
+    return null;
+  }
+  
+  const isLab = resolved.endsWith('_LAB');
+  const subjectKey = isLab ? resolved.replace('_LAB', '') : resolved;
+  
+  const subject = timetable.subjects[subjectKey];
+  if (subject) {
+    return {
+      name: subject.name,
+      shortName: subject.shortName,
+      isLab,
+    };
+  }
+  
+  return { name: resolved, shortName: resolved, isLab: false };
 }

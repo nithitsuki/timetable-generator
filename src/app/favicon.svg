@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  
+  <circle cx="256" cy="256" r="256" fill="#000000"/>
+
+  <defs>
+    <style>
+      /* Amrita Maroon for Foreground Elements */
+      .atu-color { fill: #A4123F; }
+    </style>
+  </defs>
+
+  <g>
+      <g transform="rotate(25 256 90)">
+        <rect class="atu-color" x="243.5" y="90" width="25" height="340" />
+        <path class="atu-color" d="M256,470 L226,430 H286 Z" /> 
+      </g>
+
+      <g transform="rotate(-25 256 90)">
+         <rect class="atu-color" x="243.5" y="90" width="25" height="280" />
+        <path class="atu-color" d="M256,410 L226,370 H286 Z" />
+      </g>
+
+      <rect class="atu-color" x="156" y="290" width="200" height="15" rx="0" />
+      
+      <circle class="atu-color" cx="256" cy="90" r="13" />
+  </g>
+
+</svg>

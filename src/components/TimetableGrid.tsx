@@ -2,10 +2,13 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Timetable, DayOfWeek, parseSlotRef, resolveSlot } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import { Maximize2, Minimize2 } from 'lucide-react';
+import { Maximize2, Minimize2, Calendar, Check, Share2, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface TimetableGridProps {
   timetable: Timetable;
+  batch?: string;
+  section?: string;
+  semester?: string;
 }
 
 const DAYS: DayOfWeek[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
@@ -79,7 +82,7 @@ interface ProcessedSlot {
   span: number;
 }
 
-export default function TimetableGrid({ timetable }: TimetableGridProps) {
+export default function TimetableGrid({ timetable, batch, section, semester }: TimetableGridProps) {
   // Initialize config selections with first value of each config
   const [configSelections, setConfigSelections] = useState<Record<string, string>>(() => {
     const initial: Record<string, string> = {};
@@ -93,12 +96,16 @@ export default function TimetableGrid({ timetable }: TimetableGridProps) {
 
   // Compact view for mobile - default to false initially to match server
   const [isCompactView, setIsCompactView] = useState(false);
+  
+  // Collapsible subjects card - default expanded on desktop, collapsed on mobile
+  const [isSubjectsExpanded, setIsSubjectsExpanded] = useState(true);
 
   // Set default based on screen size on mount
   useEffect(() => {
     // Check if mobile (<640px)
     if (window.innerWidth < 640) {
       setIsCompactView(true);
+      setIsSubjectsExpanded(false);
     }
   }, []);
 
@@ -233,6 +240,51 @@ export default function TimetableGrid({ timetable }: TimetableGridProps) {
     }
     return null;
   }, [currentTime]);
+  
+  // Generate ICS download URL
+  const icsUrl = useMemo(() => {
+    if (!batch || !section || !semester) return null;
+    
+    const baseUrl = `https://timetable-registry.amrita.town/ics/${batch}/${section}/${semester}`;
+    const params = new URLSearchParams();
+    
+    // Add config selections as query params
+    for (const [key, value] of Object.entries(configSelections)) {
+      if (value) {
+        params.append(key, value);
+      }
+    }
+    
+    const queryString = params.toString();
+    return queryString ? `${baseUrl}?${queryString}` : baseUrl;
+  }, [batch, section, semester, configSelections]);
+  
+  // State for copy feedback
+  const [icsCopied, setIcsCopied] = useState(false);
+  const [urlCopied, setUrlCopied] = useState(false);
+  
+  const handleCopyIcsLink = async () => {
+    if (icsUrl) {
+      try {
+        await navigator.clipboard.writeText(icsUrl);
+        setIcsCopied(true);
+        setTimeout(() => setIcsCopied(false), 2000);
+      } catch {
+        // Fallback: open in new tab if clipboard fails
+        window.open(icsUrl, '_blank');
+      }
+    }
+  };
+  
+  const handleCopyPageUrl = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setUrlCopied(true);
+      setTimeout(() => setUrlCopied(false), 2000);
+    } catch {
+      // Silently fail if clipboard not available
+    }
+  };
 
   return (
     <div className="w-full max-w-6xl mx-auto">
@@ -279,6 +331,46 @@ export default function TimetableGrid({ timetable }: TimetableGridProps) {
             ))}
           </div>
         )}
+        
+        {/* ICS Export Button */}
+        {icsUrl && (
+          <button
+            onClick={handleCopyIcsLink}
+            className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-muted/50 text-sm font-medium hover:bg-muted transition-colors"
+            title="Copy calendar link (.ics)"
+          >
+            {icsCopied ? (
+              <>
+                <Check className="h-4 w-4 text-green-500" />
+                <span className="hidden sm:inline text-green-600 dark:text-green-400">Copied!</span>
+              </>
+            ) : (
+              <>
+                <Calendar className="h-4 w-4" />
+                <span className="hidden sm:inline">Copy ICS Link</span>
+              </>
+            )}
+          </button>
+        )}
+        
+        {/* Share URL Button */}
+        <button
+          onClick={handleCopyPageUrl}
+          className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-muted/50 text-sm font-medium hover:bg-muted transition-colors"
+          title="Copy page URL"
+        >
+          {urlCopied ? (
+            <>
+              <Check className="h-4 w-4 text-green-500" />
+              <span className="hidden sm:inline text-green-600 dark:text-green-400">Copied!</span>
+            </>
+          ) : (
+            <>
+              <Share2 className="h-4 w-4" />
+              <span className="hidden sm:inline">Share</span>
+            </>
+          )}
+        </button>
       </div>
 
       {/* Time-scaled Timetable */}
@@ -445,30 +537,42 @@ export default function TimetableGrid({ timetable }: TimetableGridProps) {
 
       {/* Subject Legend */}
       <div className="mt-6 p-4 rounded-lg border border-border bg-card">
-        <h3 className="text-lg font-semibold mb-3 text-foreground">Subjects</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {Object.entries(timetable.subjects).map(([key, subject]) => (
-            <div 
-              key={key} 
-              className={cn(
-                "p-3 rounded-md border-2",
-                subjectColorMap.get(key)
-              )}
-            >
-              <div className="flex items-start justify-between">
-                <div>
-                  <span className="font-semibold text-foreground">{subject.shortName}</span>
-                  <span className="text-xs ml-2 text-muted-foreground">({key})</span>
+        <button
+          onClick={() => setIsSubjectsExpanded(!isSubjectsExpanded)}
+          className="w-full flex items-center justify-between text-left"
+        >
+          <h3 className="text-lg font-semibold text-foreground">Subjects</h3>
+          {isSubjectsExpanded ? (
+            <ChevronUp className="h-5 w-5 text-muted-foreground" />
+          ) : (
+            <ChevronDown className="h-5 w-5 text-muted-foreground" />
+          )}
+        </button>
+        {isSubjectsExpanded && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-3">
+            {Object.entries(timetable.subjects).map(([key, subject]) => (
+              <div 
+                key={key} 
+                className={cn(
+                  "p-3 rounded-md border-2",
+                  subjectColorMap.get(key)
+                )}
+              >
+                <div className="flex items-start justify-between">
+                  <div>
+                    <span className="font-semibold text-foreground">{subject.shortName}</span>
+                    <span className="text-xs ml-2 text-muted-foreground">({key})</span>
+                  </div>
+                  <span className="text-xs font-mono text-muted-foreground">{subject.code}</span>
                 </div>
-                <span className="text-xs font-mono text-muted-foreground">{subject.code}</span>
+                <p className="text-sm text-foreground mt-1">{subject.name}</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {subject.faculty.join(', ')}
+                </p>
               </div>
-              <p className="text-sm text-foreground mt-1">{subject.name}</p>
-              <p className="text-xs text-muted-foreground mt-1">
-                {subject.faculty.join(', ')}
-              </p>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

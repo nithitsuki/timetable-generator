@@ -16,6 +16,21 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "ATU - Amrita Timetable Utility",
   description: "Beautiful, accessible, and powerful timetables for Amrita university students.",
+  icons: {
+    icon: "/favicon.svg",
+  },
+  openGraph: {
+    title: "ATU - Amrita Timetable Utility",
+    description: "Beautiful, accessible, and powerful timetables for Amrita university students.",
+    url: "https://timetable.amrita.town",
+    siteName: "ATU",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "ATU - Amrita Timetable Utility",
+    description: "Beautiful, accessible, and powerful timetables for Amrita university students.",
+  },
 };
 
 export default function RootLayout({
