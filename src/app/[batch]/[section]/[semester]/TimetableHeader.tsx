@@ -126,14 +126,13 @@ export default function TimetableHeader({
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
+      <div className="container mx-auto px-2 sm:px-4">
+        <div className="flex h-12 sm:h-16 items-center justify-between">
           {/* Back button and title */}
-          <div className="flex items-center gap-2 sm:gap-4">
+          <div className="flex items-center gap-1 sm:gap-4">
             <Link href="/">
-              <Button variant="ghost" size="sm" className="shrink-0 gap-1 px-2 sm:px-3">
-                <ChevronLeft className="h-5 w-5" />
-                <span className="sm:hidden">Home</span>
+              <Button variant="ghost" size="icon" className="shrink-0 h-8 w-8 sm:h-9 sm:w-9">
+                <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
             </Link>
             <div className="hidden sm:block">
@@ -148,9 +147,9 @@ export default function TimetableHeader({
           </div>
 
           {/* Navigation selectors */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-1 sm:gap-3">
             <Select value={batch} onValueChange={handleBatchChange}>
-              <SelectTrigger className="w-[90px] sm:w-[120px]">
+              <SelectTrigger className="w-[70px] sm:w-[100px] h-8 sm:h-9 text-xs sm:text-sm px-2 sm:px-3">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -163,7 +162,7 @@ export default function TimetableHeader({
             </Select>
 
             <Select value={section} onValueChange={handleSectionChange}>
-              <SelectTrigger className="w-[90px] sm:w-[120px]">
+              <SelectTrigger className="w-[70px] sm:w-[100px] h-8 sm:h-9 text-xs sm:text-sm px-2 sm:px-3">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -176,7 +175,7 @@ export default function TimetableHeader({
             </Select>
 
             <Select value={semester} onValueChange={handleSemesterChange}>
-              <SelectTrigger className="w-[80px] sm:w-[100px]">
+              <SelectTrigger className="w-[55px] sm:w-[80px] h-8 sm:h-9 text-xs sm:text-sm px-2 sm:px-3">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -194,9 +193,9 @@ export default function TimetableHeader({
               size="icon"
               onClick={handleToggleFavourite}
               title={isFav ? "Remove from favourites" : "Add to favourites"}
-              className="shrink-0"
+              className="shrink-0 h-8 w-8 sm:h-9 sm:w-9"
             >
-              <Star className={`h-5 w-5 ${isFav ? 'fill-yellow-500 text-yellow-500' : ''}`} />
+              <Star className={`h-4 w-4 sm:h-5 sm:w-5 ${isFav ? 'fill-yellow-500 text-yellow-500' : ''}`} />
             </Button>
 
             {/* Set as my class button */}
@@ -205,12 +204,12 @@ export default function TimetableHeader({
               size="icon"
               onClick={handleSetAsMyClass}
               title={isMyClass ? "This is your class" : "Set as my class"}
-              className="shrink-0"
+              className="shrink-0 h-8 w-8 sm:h-9 sm:w-9"
             >
-              <Heart className={`h-5 w-5 ${isMyClass ? 'fill-primary text-primary' : ''}`} />
+              <Heart className={`h-4 w-4 sm:h-5 sm:w-5 ${isMyClass ? 'fill-primary text-primary' : ''}`} />
             </Button>
 
-            <div className="ml-2">
+            <div className="ml-1 sm:ml-2">
               <ModeToggle />
             </div>
           </div>

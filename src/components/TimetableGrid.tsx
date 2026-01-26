@@ -2,7 +2,10 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Timetable, DayOfWeek, parseSlotRef, resolveSlot } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import { Maximize2, Minimize2, Calendar, Check, Share2, ChevronDown, ChevronUp } from 'lucide-react';
+import { Maximize2, Minimize2, Calendar, Check, Share2, ChevronDown, ChevronUp, Copy, Download, Link } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 interface TimetableGridProps {
   timetable: Timetable;
@@ -71,6 +74,37 @@ const BREAKS = [
   { start: '10:40', end: '11:00', label: 'Tea' },
   { start: '12:40', end: '14:00', label: 'Lunch' },
 ];
+
+// Cross-browser clipboard copy with fallback
+async function copyToClipboard(text: string): Promise<boolean> {
+  // Try modern Clipboard API first
+  if (navigator?.clipboard?.writeText) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      // Fall through to fallback
+    }
+  }
+  
+  // Fallback: create temporary textarea and use execCommand
+  try {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.style.position = 'fixed';
+    textarea.style.left = '-9999px';
+    textarea.style.top = '-9999px';
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    
+    const success = document.execCommand('copy');
+    document.body.removeChild(textarea);
+    return success;
+  } catch {
+    return false;
+  }
+}
 
 interface ProcessedSlot {
   slotRef: string | null;
@@ -265,61 +299,64 @@ export default function TimetableGrid({ timetable, batch, section, semester }: T
   
   const handleCopyIcsLink = async () => {
     if (icsUrl) {
-      try {
-        await navigator.clipboard.writeText(icsUrl);
+      const success = await copyToClipboard(icsUrl);
+      if (success) {
         setIcsCopied(true);
         setTimeout(() => setIcsCopied(false), 2000);
-      } catch {
+      } else {
         // Fallback: open in new tab if clipboard fails
         window.open(icsUrl, '_blank');
       }
     }
   };
   
-  const handleCopyPageUrl = async () => {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
+  const handleShare = async () => {
+    const url = window.location.href;
+    const title = `Timetable - ${section?.toUpperCase() || ''} Sem ${semester || ''}`;
+    
+    // Try native share API first (works on mobile)
+    if (navigator?.share) {
+      try {
+        await navigator.share({ title, url });
+        return;
+      } catch {
+        // User cancelled or share failed, fall through to clipboard
+      }
+    }
+    
+    // Fallback to clipboard
+    const success = await copyToClipboard(url);
+    if (success) {
       setUrlCopied(true);
       setTimeout(() => setUrlCopied(false), 2000);
-    } catch {
-      // Silently fail if clipboard not available
     }
   };
 
   return (
     <div className="w-full max-w-6xl mx-auto">
-      {/* View Toggle + Config Selectors */}
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
-        {/* Compact view toggle - only on mobile */}
+      {/* Toolbar row - all controls in one row */}
+      <div className="mb-3 flex items-center gap-2">
+        {/* Left side: View toggle (mobile only) */}
         <button
           onClick={() => setIsCompactView(!isCompactView)}
-          className="sm:hidden flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-muted/50 text-sm font-medium hover:bg-muted transition-colors"
+          className="sm:hidden flex items-center justify-center h-9 w-9 rounded-md border border-border bg-muted/50 hover:bg-muted transition-colors"
+          title={isCompactView ? "Detailed view" : "Compact view"}
         >
-          {isCompactView ? (
-            <>
-              <Maximize2 className="h-4 w-4" />
-              Detailed View
-            </>
-          ) : (
-            <>
-              <Minimize2 className="h-4 w-4" />
-              Compact View
-            </>
-          )}
+          {isCompactView ? <Maximize2 className="h-4 w-4" /> : <Minimize2 className="h-4 w-4" />}
         </button>
-
-        {/* Config Selectors */}
+        
+        {/* Config Selectors - inline, no label on mobile */}
         {Object.keys(timetable.config).length > 0 && (
-          <div className="flex flex-wrap gap-4 justify-center sm:justify-end flex-1">
+          <div className="flex items-center gap-2 flex-1 min-w-0">
             {Object.entries(timetable.config).map(([key, config]) => (
-              <div key={key} className="flex items-center gap-2">
-                <label className="text-sm font-medium text-foreground">
+              <div key={key} className="flex items-center gap-1.5 min-w-0 flex-1">
+                <label className="hidden sm:block text-sm font-medium text-foreground whitespace-nowrap">
                   {config.label}:
                 </label>
                 <select
                   value={configSelections[key] || ''}
                   onChange={(e) => handleConfigChange(key, e.target.value)}
-                  className="px-3 py-1.5 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="flex-1 min-w-0 h-9 px-2 sm:px-3 rounded-md border border-input bg-background text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                 >
                   {config.values.map((v) => (
                     <option key={v.id} value={v.id}>
@@ -332,45 +369,121 @@ export default function TimetableGrid({ timetable, batch, section, semester }: T
           </div>
         )}
         
-        {/* ICS Export Button */}
-        {icsUrl && (
-          <button
-            onClick={handleCopyIcsLink}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-muted/50 text-sm font-medium hover:bg-muted transition-colors"
-            title="Copy calendar link (.ics)"
-          >
-            {icsCopied ? (
-              <>
-                <Check className="h-4 w-4 text-green-500" />
-                <span className="hidden sm:inline text-green-600 dark:text-green-400">Copied!</span>
-              </>
-            ) : (
-              <>
-                <Calendar className="h-4 w-4" />
-                <span className="hidden sm:inline">Copy ICS Link</span>
-              </>
-            )}
-          </button>
-        )}
+        {/* Spacer when no config */}
+        {Object.keys(timetable.config).length === 0 && <div className="flex-1" />}
         
-        {/* Share URL Button */}
-        <button
-          onClick={handleCopyPageUrl}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-muted/50 text-sm font-medium hover:bg-muted transition-colors"
-          title="Copy page URL"
-        >
-          {urlCopied ? (
-            <>
-              <Check className="h-4 w-4 text-green-500" />
-              <span className="hidden sm:inline text-green-600 dark:text-green-400">Copied!</span>
-            </>
-          ) : (
-            <>
-              <Share2 className="h-4 w-4" />
-              <span className="hidden sm:inline">Share</span>
-            </>
+        {/* Right side: Action buttons */}
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          {/* ICS Export Popover */}
+          {icsUrl && (
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-9 w-9 sm:w-auto sm:px-3 p-0 sm:p-2"
+                >
+                  <Calendar className="h-4 w-4" />
+                  <span className="hidden sm:inline ml-1.5">ICS</span>
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80" align="end">
+                <div className="space-y-3">
+                  <div>
+                    <h4 className="font-medium text-sm">Calendar Subscription</h4>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Add this timetable to your calendar app (Google Calendar, Apple Calendar, etc.)
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Input
+                      readOnly
+                      value={icsUrl}
+                      className="h-8 text-xs font-mono"
+                      onClick={(e) => (e.target as HTMLInputElement).select()}
+                    />
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="flex-1 h-8"
+                      onClick={async () => {
+                        const success = await copyToClipboard(icsUrl);
+                        if (success) {
+                          setIcsCopied(true);
+                          setTimeout(() => setIcsCopied(false), 2000);
+                        }
+                      }}
+                    >
+                      {icsCopied ? (
+                        <><Check className="h-3.5 w-3.5 mr-1.5 text-green-500" /> Copied!</>
+                      ) : (
+                        <><Copy className="h-3.5 w-3.5 mr-1.5" /> Copy Link</>
+                      )}
+                    </Button>
+                    <Button
+                      size="sm"
+                      className="flex-1 h-8"
+                      onClick={() => window.open(icsUrl, '_blank')}
+                    >
+                      <Download className="h-3.5 w-3.5 mr-1.5" /> Download
+                    </Button>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
           )}
-        </button>
+          
+          {/* Share Popover - hidden on mobile, use native share instead */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="hidden sm:flex h-9 px-3"
+              >
+                <Share2 className="h-4 w-4" />
+                <span className="ml-1.5">Share</span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80" align="end">
+              <div className="space-y-3">
+                <div>
+                  <h4 className="font-medium text-sm">Share Timetable</h4>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Share this timetable link with others
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <Input
+                    readOnly
+                    value={typeof window !== 'undefined' ? window.location.href : ''}
+                    className="h-8 text-xs font-mono"
+                    onClick={(e) => (e.target as HTMLInputElement).select()}
+                  />
+                </div>
+                <Button
+                  size="sm"
+                  className="w-full h-8"
+                  onClick={async () => {
+                    const success = await copyToClipboard(window.location.href);
+                    if (success) {
+                      setUrlCopied(true);
+                      setTimeout(() => setUrlCopied(false), 2000);
+                    }
+                  }}
+                >
+                  {urlCopied ? (
+                    <><Check className="h-3.5 w-3.5 mr-1.5 text-green-500" /> Copied!</>
+                  ) : (
+                    <><Copy className="h-3.5 w-3.5 mr-1.5" /> Copy Link</>
+                  )}
+                </Button>
+              </div>
+            </PopoverContent>
+          </Popover>
+        </div>
       </div>
 
       {/* Time-scaled Timetable */}
