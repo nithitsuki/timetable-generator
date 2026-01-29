@@ -1,90 +1,54 @@
-import { Timetable, DayOfWeek, parseSlotRef, Subject } from './types';
-import { buildTimetableIndex, loadTimetable } from './registry';
+// Client-side faculty utilities
+// These functions work with timetable data fetched from /api/timetables
+
+import { Timetable, DayOfWeek, parseSlotRef, FacultySlot, FacultySchedule, FacultySummary } from './types';
 
 // Days of the week
 export const DAYS: DayOfWeek[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
-// Represents a single teaching slot for a faculty member
-export interface FacultySlot {
-  day: DayOfWeek;
-  slotIndex: number;
-  subjectCode: string;
-  subjectName: string;
-  shortName: string;
-  isLab: boolean;
-  batch: string;
-  section: string;
-  semester: string;
-  // For labs that span multiple slots
-  spanStart?: number;
-  spanEnd?: number;
-}
-
-// Faculty member with their complete schedule
-export interface FacultySchedule {
-  name: string;
-  slots: FacultySlot[];
-  subjects: {
-    code: string;
-    name: string;
-    shortName: string;
-    classes: { batch: string; section: string; semester: string }[];
-  }[];
-}
-
-// Summary info about a faculty member
-export interface FacultySummary {
-  name: string;
-  subjectCount: number;
-  classCount: number;
-}
-
-// Cache for all timetables
-let cachedTimetables: {
+export interface TimetableEntry {
   batch: string;
   section: string;
   semester: string;
   timetable: Timetable;
-}[] | null = null;
+}
 
-function loadAllTimetables() {
-  if (cachedTimetables) return cachedTimetables;
-  
-  const index = buildTimetableIndex();
-  const timetables: typeof cachedTimetables = [];
-  
-  for (const [batch, sections] of Object.entries(index.batches)) {
-    for (const [section, semesters] of Object.entries(sections)) {
-      for (const semester of semesters) {
-        const timetable = loadTimetable(batch, section, semester);
-        if (timetable) {
-          timetables.push({ batch, section, semester, timetable });
-        }
-      }
-    }
-  }
-  
-  cachedTimetables = timetables;
-  return timetables;
+/**
+ * Strip title prefixes (Dr., Mr., Ms., etc.) from faculty name for sorting/grouping
+ */
+export function stripTitle(name: string): string {
+  return name
+    .trim()
+    .replace(/^(dr\.|mr\.|ms\.|mrs\.|prof\.)\s*/i, '')
+    .trim();
 }
 
 /**
  * Normalize faculty name for consistent comparison
  */
 export function normalizeFacultyName(name: string): string {
-  return name
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, ' ')
-    .replace(/^(dr\.|mr\.|ms\.|mrs\.|prof\.)\s*/i, '')
-    .trim();
+  return stripTitle(name).toLowerCase().replace(/\s+/g, ' ');
 }
 
 /**
- * Extract all unique faculty names from all timetables
+ * Get sort key for faculty name (strips title, then sorts)
  */
-export function getAllFaculty(): FacultySummary[] {
-  const timetables = loadAllTimetables();
+export function getFacultySortKey(name: string): string {
+  return stripTitle(name).toLowerCase();
+}
+
+/**
+ * Get the first letter for grouping (after stripping title)
+ */
+export function getFirstLetter(name: string): string {
+  const stripped = stripTitle(name);
+  return stripped.charAt(0).toUpperCase();
+}
+
+/**
+ * Extract all unique faculty from timetables
+ */
+export function extractAllFaculty(timetables: TimetableEntry[]): FacultySummary[] {
   const facultyMap = new Map<string, { 
     name: string; 
     subjects: Set<string>; 
@@ -98,7 +62,7 @@ export function getAllFaculty(): FacultySummary[] {
         
         if (!facultyMap.has(normalized)) {
           facultyMap.set(normalized, {
-            name: facultyName, // Keep original name with title
+            name: facultyName,
             subjects: new Set(),
             classes: new Set(),
           });
@@ -111,24 +75,25 @@ export function getAllFaculty(): FacultySummary[] {
     }
   }
   
-  // Convert to array and sort by name
+  // Convert to array and sort by name (ignoring titles)
   return Array.from(facultyMap.values())
     .map(f => ({
       name: f.name,
       subjectCount: f.subjects.size,
       classCount: f.classes.size,
     }))
-    .sort((a, b) => a.name.localeCompare(b.name));
+    .sort((a, b) => getFacultySortKey(a.name).localeCompare(getFacultySortKey(b.name)));
 }
 
 /**
- * Get the complete schedule for a specific faculty member
+ * Build schedule for a specific faculty member
  */
-export function getFacultySchedule(facultyName: string): FacultySchedule | null {
-  const timetables = loadAllTimetables();
+export function buildFacultySchedule(
+  facultyName: string,
+  timetables: TimetableEntry[]
+): FacultySchedule | null {
   const normalizedSearch = normalizeFacultyName(facultyName);
   
-  // Find all subjects and classes this faculty teaches
   const slots: FacultySlot[] = [];
   const subjectsMap = new Map<string, {
     code: string;
@@ -141,13 +106,13 @@ export function getFacultySchedule(facultyName: string): FacultySchedule | null 
   
   for (const { batch, section, semester, timetable } of timetables) {
     // Find subjects taught by this faculty in this timetable
-    const facultySubjects = new Map<string, Subject>();
+    const facultySubjects = new Map<string, typeof timetable.subjects[string]>();
     
     for (const [key, subject] of Object.entries(timetable.subjects)) {
       for (const fname of subject.faculty) {
         if (normalizeFacultyName(fname) === normalizedSearch) {
           facultySubjects.set(key, subject);
-          actualFacultyName = fname; // Use the actual name from data
+          actualFacultyName = fname;
           
           // Track subject info
           if (!subjectsMap.has(subject.code)) {
@@ -173,10 +138,6 @@ export function getFacultySchedule(facultyName: string): FacultySchedule | null 
       let i = 0;
       while (i < daySchedule.length) {
         const slotRef = daySchedule[i];
-        
-        // Resolve the slot (handles config-based slots)
-        // For teacher view, we need to check all possible config combinations
-        // For simplicity, we check the raw reference first
         const { subjectKey, isLab } = parseSlotRef(slotRef);
         
         // Check if this is a direct subject reference
@@ -213,6 +174,8 @@ export function getFacultySchedule(facultyName: string): FacultySchedule | null 
         // Check if it's a slot reference that resolves to a faculty's subject
         const slotDef = timetable.slots[slotRef];
         if (slotDef) {
+          let found = false;
+          
           // Simple slot - check all choices
           if ('choices' in slotDef && typeof slotDef.match === 'string') {
             for (const choice of Object.values(slotDef.choices)) {
@@ -220,7 +183,6 @@ export function getFacultySchedule(facultyName: string): FacultySchedule | null 
               if (facultySubjects.has(choiceKey)) {
                 const subject = facultySubjects.get(choiceKey)!;
                 
-                // Check for consecutive slots
                 let span = 1;
                 while (
                   i + span < daySchedule.length &&
@@ -243,21 +205,21 @@ export function getFacultySchedule(facultyName: string): FacultySchedule | null 
                   spanEnd: i + span - 1,
                 });
                 
-                i += span - 1; // -1 because we'll increment at end
+                i += span - 1;
+                found = true;
                 break;
               }
             }
           }
           
           // Complex slot - check all choices
-          if (Array.isArray(slotDef.match)) {
+          if (!found && Array.isArray(slotDef.match)) {
             const complexSlot = slotDef as { match: string[]; choices: { pattern: string[]; value: string }[] };
             for (const choice of complexSlot.choices) {
               const { subjectKey: choiceKey, isLab: choiceIsLab } = parseSlotRef(choice.value);
               if (facultySubjects.has(choiceKey)) {
                 const subject = facultySubjects.get(choiceKey)!;
                 
-                // Check for consecutive slots
                 let span = 1;
                 while (
                   i + span < daySchedule.length &&
@@ -315,15 +277,31 @@ export function getFacultySchedule(facultyName: string): FacultySchedule | null 
 }
 
 /**
- * Search faculty by name (partial match)
+ * Group faculty by first letter
  */
-export function searchFaculty(query: string): FacultySummary[] {
-  const allFaculty = getAllFaculty();
+export function groupFacultyByLetter(faculty: FacultySummary[]): Map<string, FacultySummary[]> {
+  const groups = new Map<string, FacultySummary[]>();
+  
+  for (const f of faculty) {
+    const letter = getFirstLetter(f.name);
+    if (!groups.has(letter)) {
+      groups.set(letter, []);
+    }
+    groups.get(letter)!.push(f);
+  }
+  
+  return groups;
+}
+
+/**
+ * Search/filter faculty by name
+ */
+export function filterFaculty(faculty: FacultySummary[], query: string): FacultySummary[] {
   const normalizedQuery = query.toLowerCase().trim();
+  if (!normalizedQuery) return faculty;
   
-  if (!normalizedQuery) return allFaculty;
-  
-  return allFaculty.filter(f => 
-    f.name.toLowerCase().includes(normalizedQuery)
+  return faculty.filter(f => 
+    f.name.toLowerCase().includes(normalizedQuery) ||
+    stripTitle(f.name).toLowerCase().includes(normalizedQuery)
   );
 }

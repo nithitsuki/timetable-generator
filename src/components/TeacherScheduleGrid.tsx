@@ -2,9 +2,11 @@
 import { useMemo } from 'react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import { FacultySchedule, FacultySlot, DAYS } from '@/lib/faculty';
-import { DayOfWeek } from '@/lib/types';
+import { FacultySchedule, FacultySlot, DayOfWeek } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
+
+// Days of the week (client-side constant)
+const DAYS: DayOfWeek[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
 interface TeacherScheduleGridProps {
   schedule: FacultySchedule;
