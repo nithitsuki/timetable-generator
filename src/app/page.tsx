@@ -184,7 +184,7 @@ export default function HomePage() {
       </div>
 
       {/* Header */}
-      <div className="text-center mb-12">
+      <div className="text-center mb-8">
         <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-2 tracking-tight">
           ATU
         </h1>
@@ -193,44 +193,111 @@ export default function HomePage() {
         </p>
       </div>
 
-      {/* Main Options Grid */}
-      <div className="w-full max-w-lg grid grid-cols-2 gap-4">
-        {mainOptions.map((option) => {
-          const Icon = option.icon;
-          const content = (
-            <div
-              className={cn(
-                "flex flex-col items-center text-center m-0 p-4 h-full rounded-2xl border bg-card hover:bg-muted/50 transition-all cursor-pointer group shadow-sm hover:shadow-md",
-                "active:scale-[0.98]"
-              )}
-            >
-              <div className="p-3 rounded-xl ">
-                <Icon className="h-10 w-10 text-foreground" />
-              </div>
-              <div className="flex-1 min-w-0 w-full flex flex-col justify-center">
-                <h2 className="text-sm sm:text-base font-bold text-foreground mb-1 line-clamp-1 px-0">{option.title}</h2>
-                <p className="text-[10px] sm:text-xs text-muted-foreground leading-tight line-clamp-2 px-0">
-                  {option.description}
-                </p>
-              </div>
-            </div>
-          );
-
-          if (option.onClick) {
-            return (
-              <div key={option.id} onClick={option.onClick} className="h-40 sm:h-44">
-                {content}
+      {/* Main Options Layout */}
+      <div className="w-full max-w-lg space-y-4">
+        {/* Top Row - Free Class Finder & Common Free Time */}
+        <div className="grid grid-cols-2 gap-4">
+          {[mainOptions[1], mainOptions[2]].map((option) => {
+            const Icon = option.icon;
+            const content = (
+              <div
+                className={cn(
+                  "flex flex-col items-center text-center m-0 pb-4 pt-2 h-full rounded-2xl border bg-card hover:bg-muted/50 transition-all cursor-pointer group shadow-sm hover:shadow-md",
+                  "active:scale-[0.98]"
+                )}
+              >
+                <div className="p-3 rounded-xl">
+                  <Icon className="h-10 w-10 text-foreground" />
+                </div>
+                <div className="flex-1 min-w-0 w-full flex flex-col justify-center">
+                  <h2 className="text-sm sm:text-base font-bold text-foreground mb-1 line-clamp-1 px-0">{option.title}</h2>
+                  <p className="text-[10px] sm:text-xs text-muted-foreground leading-tight line-clamp-2 px-0">
+                    {option.description}
+                  </p>
+                </div>
               </div>
             );
-          }
 
-          return (
-            <Link key={option.id} href={option.href || '#'} className="block h-40 sm:h-44">
-              {content}
-            </Link>
-          );
-        })}
+            return (
+              <Link key={option.id} href={option.href || '#'} className="block h-32 sm:h-36">
+                {content}
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* Your Timetable - Full Width */}
+        <div
+          onClick={handleYourTimetable}
+          className={cn(
+            "flex items-center justify-center gap-4 p-4 rounded-2xl border bg-card hover:bg-muted/50 transition-all cursor-pointer shadow-sm hover:shadow-md",
+            "active:scale-[0.99]"
+          )}
+        >
+          <div className="p-2 rounded-xl">
+            <Calendar className="h-7 w-7 text-foreground" />
+          </div>
+          <div className="flex-1 min-w-0 text-center">
+            <h2 className="text-base sm:text-lg font-bold text-foreground">Your Timetable</h2>
+            <p className="text-xs sm:text-sm text-muted-foreground">
+              {myClass ? formatShortLabel(myClass.section, myClass.semester) : 'Set up your class'}
+            </p>
+          </div>
+          <ChevronRight className="h-5 w-5 text-muted-foreground" />
+        </div>
+
+        {/* Bottom Row - Teacher Schedules & All Timetables */}
+        <div className="grid grid-cols-2 gap-4">
+          {[mainOptions[3], mainOptions[4]].map((option) => {
+            const Icon = option.icon;
+            const content = (
+              <div
+                className={cn(
+                  "flex flex-col items-center text-center m-0 pb-4 pt-2 h-full rounded-2xl border bg-card hover:bg-muted/50 transition-all cursor-pointer group shadow-sm hover:shadow-md",
+                  "active:scale-[0.98]"
+                )}
+              >
+                <div className="p-3 rounded-xl">
+                  <Icon className="h-10 w-10 text-foreground" />
+                </div>
+                <div className="flex-1 min-w-0 w-full flex flex-col justify-center">
+                  <h2 className="text-sm sm:text-base font-bold text-foreground mb-1 line-clamp-1 px-0">{option.title}</h2>
+                  <p className="text-[10px] sm:text-xs text-muted-foreground leading-tight line-clamp-2 px-0">
+                    {option.description}
+                  </p>
+                </div>
+              </div>
+            );
+
+            if (option.onClick) {
+              return (
+                <div key={option.id} onClick={option.onClick} className="h-32 sm:h-36">
+                  {content}
+                </div>
+              );
+            }
+
+            return (
+              <Link key={option.id} href={option.href || '#'} className="block h-32 sm:h-36">
+                {content}
+              </Link>
+            );
+          })}
+        </div>
       </div>
+
+      {/* Footer */}
+      <footer className="mt-12 pt-8 border-t border-muted/20">
+        <div className="flex justify-center gap-6 text-sm text-muted-foreground">
+          <Link href="/about" className="hover:text-foreground transition-colors">
+            About
+          </Link>
+          <span className="text-muted-foreground/50">•</span>
+          <Link href="/privacy" className="hover:text-foreground transition-colors">
+            Privacy
+          </Link>
+        </div>
+      </footer>
     </div>
   );
 }

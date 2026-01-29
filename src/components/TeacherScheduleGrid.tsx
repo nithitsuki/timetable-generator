@@ -140,47 +140,20 @@ export default function TeacherScheduleGrid({ schedule }: TeacherScheduleGridPro
   }, [schedule.slots]);
 
   return (
-    <div className="space-y-4">
-      {/* Summary Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
-        <div className="bg-muted/50 rounded-lg p-3 text-center">
-          <div className="text-2xl font-bold">{schedule.subjects.length}</div>
-          <div className="text-xs text-muted-foreground">Subjects</div>
-        </div>
-        <div className="bg-muted/50 rounded-lg p-3 text-center">
-          <div className="text-2xl font-bold">
-            {new Set(schedule.slots.map(s => `${s.batch}-${s.section}-${s.semester}`)).size}
-          </div>
-          <div className="text-xs text-muted-foreground">Classes</div>
-        </div>
-        <div className="bg-muted/50 rounded-lg p-3 text-center">
-          <div className="text-2xl font-bold">
-            {schedule.slots.filter(s => s.slotIndex === (s.spanStart ?? s.slotIndex)).length}
-          </div>
-          <div className="text-xs text-muted-foreground">Sessions/Week</div>
-        </div>
-        <div className="bg-muted/50 rounded-lg p-3 text-center">
-          <div className="text-2xl font-bold">
-            {schedule.slots.filter(s => s.isLab && s.slotIndex === (s.spanStart ?? s.slotIndex)).length}
-          </div>
-          <div className="text-xs text-muted-foreground">Labs/Week</div>
-        </div>
-      </div>
-
-      {/* Subjects taught */}
-      <div className="mb-4">
-        <h3 className="text-sm font-semibold mb-2 text-muted-foreground">Subjects</h3>
-        <div className="flex flex-wrap gap-2">
-          {schedule.subjects.map(subject => (
-            <Badge 
-              key={subject.code} 
-              variant="secondary"
-              className="text-xs"
-            >
-              {subject.shortName} ({subject.code})
-            </Badge>
+    <div className="space-y-4 max-w-4xl mx-auto">
+      {/* Compact Stats Bar */}
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+        <span><strong className="text-foreground">{schedule.subjects.length}</strong> subjects</span>
+        <span><strong className="text-foreground">{new Set(schedule.slots.map(s => `${s.batch}-${s.section}-${s.semester}`)).size}</strong> classes</span>
+        <span><strong className="text-foreground">{schedule.slots.filter(s => s.slotIndex === (s.spanStart ?? s.slotIndex)).length}</strong> sessions/week</span>
+        <span><strong className="text-foreground">{schedule.slots.filter(s => s.isLab && s.slotIndex === (s.spanStart ?? s.slotIndex)).length}</strong> labs</span>
+        <span className="hidden sm:inline">•</span>
+        <span className="hidden sm:flex flex-wrap gap-1">
+          {schedule.subjects.slice(0, 4).map(s => (
+            <Badge key={s.code} variant="secondary" className="text-[10px] py-0 px-1.5">{s.shortName}</Badge>
           ))}
-        </div>
+          {schedule.subjects.length > 4 && <span className="text-muted-foreground">+{schedule.subjects.length - 4}</span>}
+        </span>
       </div>
 
       {/* Schedule Grid */}
