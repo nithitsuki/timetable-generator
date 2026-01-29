@@ -135,3 +135,40 @@ export function resolveSlot(
 
   return slotRef;
 }
+
+// Faculty types (for Teacher Schedule Viewer)
+
+// Represents a single teaching slot for a faculty member
+export interface FacultySlot {
+  day: DayOfWeek;
+  slotIndex: number;
+  subjectCode: string;
+  subjectName: string;
+  shortName: string;
+  isLab: boolean;
+  batch: string;
+  section: string;
+  semester: string;
+  // For labs that span multiple slots
+  spanStart?: number;
+  spanEnd?: number;
+}
+
+// Faculty member with their complete schedule
+export interface FacultySchedule {
+  name: string;
+  slots: FacultySlot[];
+  subjects: {
+    code: string;
+    name: string;
+    shortName: string;
+    classes: { batch: string; section: string; semester: string }[];
+  }[];
+}
+
+// Summary info about a faculty member
+export interface FacultySummary {
+  name: string;
+  subjectCount: number;
+  classCount: number;
+}
