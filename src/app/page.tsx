@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Settings, Calendar, Search, Users, Grid3X3, ChevronRight } from 'lucide-react';
+import { Settings, Calendar, Search, Users, Grid3X3, ChevronRight, GraduationCap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Switch } from '@/components/ui/switch';
@@ -76,6 +76,15 @@ export default function HomePage() {
       icon: Users,
       color: 'bg-purple-500',
       href: '/tools/common-time',
+      available: true,
+    },
+    {
+      id: 'teacher-schedule',
+      title: 'Teacher Schedules',
+      description: 'View faculty timetables',
+      icon: GraduationCap,
+      color: 'bg-rose-500',
+      href: '/tools/teacher-schedule',
       available: true,
     },
     {
