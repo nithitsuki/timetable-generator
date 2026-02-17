@@ -19,7 +19,7 @@ import {
 
 export default function HomePage() {
   const router = useRouter();
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   
   // User preferences
@@ -126,7 +126,7 @@ export default function HomePage() {
                 {mounted && (
                   <Switch
                     id="dark-mode"
-                    checked={theme === 'dark'}
+                    checked={resolvedTheme === 'dark'}
                     onCheckedChange={(checked) => setTheme(checked ? 'dark' : 'light')}
                   />
                 )}

@@ -6,15 +6,15 @@ import { useTheme } from "next-themes"
 import { Toggle } from "@/components/ui/toggle"
 
 export default function ModeToggle() {
-  const { theme, setTheme } = useTheme()
+  const { resolvedTheme, setTheme } = useTheme()
 
   return (
     <div>
       <Toggle
         variant="outline"
         className="group data-[state=on]:hover:bg-muted size-9 data-[state=on]:bg-transparent"
-        // pressed={theme === "dark"}
-        onPressedChange={() => setTheme(theme === "dark" ? "light" : "dark")}
+        // pressed={resolvedTheme === "dark"}
+        onPressedChange={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
         // aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
       >
         <MoonIcon
