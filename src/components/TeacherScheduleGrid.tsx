@@ -51,8 +51,8 @@ const CLASS_COLORS = [
 ];
 
 const LAB_COLORS = 'bg-amber-100 dark:bg-amber-900/40 border-amber-400 dark:border-amber-600 text-amber-800 dark:text-amber-200';
-const MONO_COLOR = 'bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300';
-const MONO_LAB = 'bg-slate-100 dark:bg-slate-800 border-slate-400 dark:border-slate-500 text-slate-700 dark:text-slate-300';
+const MONO_COLOR = 'bg-muted border-border/80 text-foreground';
+const MONO_LAB = 'bg-muted/80 border-border text-foreground';
 
 interface ProcessedSlot extends FacultySlot {
   gridSpan: number;

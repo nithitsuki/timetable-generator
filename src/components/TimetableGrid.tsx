@@ -68,8 +68,8 @@ const SUBJECT_COLORS = [
 ];
 
 const LAB_COLORS = 'bg-amber-100 dark:bg-amber-900/40 border-amber-400 dark:border-amber-600';
-const MONO_COLOR = 'bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-600';
-const MONO_LAB = 'bg-slate-100 dark:bg-slate-800 border-slate-400 dark:border-slate-500';
+const MONO_COLOR = 'bg-muted border-border/80';
+const MONO_LAB = 'bg-muted/80 border-border';
 
 // Break periods for visual display
 const BREAKS = [
@@ -570,7 +570,7 @@ export default function TimetableGrid({ timetable, batch, section, semester }: T
               <div className={cn(
                 "shrink-0 p-2 bg-muted/50 font-medium text-foreground flex items-center justify-center border-r border-border",
                 isCompactView ? "w-10 text-xs" : "w-16 md:w-20 text-sm",
-                isCurrentDay && (monochrome ? "bg-slate-200 dark:bg-slate-700" : "bg-blue-100 dark:bg-blue-900/30")
+                isCurrentDay && (monochrome ? "bg-muted-foreground/15" : "bg-blue-100 dark:bg-blue-900/30")
               )}>
                 {isCompactView ? day.slice(0, 1) : day.slice(0, 3)}
               </div>
@@ -596,10 +596,10 @@ export default function TimetableGrid({ timetable, batch, section, semester }: T
                 {/* Current time indicator line */}
                 {isCurrentDay && currentTimePercent !== null && (
                   <div
-                    className={cn("absolute top-0 h-full w-0.5 z-20", monochrome ? "bg-slate-500" : "bg-blue-500")}
+                    className={cn("absolute top-0 h-full w-0.5 z-20", monochrome ? "bg-muted-foreground" : "bg-blue-500")}
                     style={{ left: `${currentTimePercent}%` }}
                   >
-                    <div className={cn("absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full", monochrome ? "bg-slate-500" : "bg-blue-500")} />
+                    <div className={cn("absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full", monochrome ? "bg-muted-foreground" : "bg-blue-500")} />
                   </div>
                 )}
 
@@ -634,7 +634,7 @@ export default function TimetableGrid({ timetable, batch, section, semester }: T
                         {subject?.shortName || slot.slotRef}
                       </span>
                       {slot.isLab && !isCompactView && (
-                        <span className={cn("text-[10px] px-1 py-0.5 rounded", monochrome ? "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300" : "bg-amber-200 dark:bg-amber-800 text-amber-900 dark:text-amber-100")}>
+                        <span className={cn("text-[10px] px-1 py-0.5 rounded", monochrome ? "bg-muted-foreground/20 text-muted-foreground" : "bg-amber-200 dark:bg-amber-800 text-amber-900 dark:text-amber-100")}>
                           LAB
                         </span>
                       )}
@@ -651,11 +651,11 @@ export default function TimetableGrid({ timetable, batch, section, semester }: T
       <div className="mt-4 p-3 rounded-lg border border-border bg-card text-sm">
         <div className="flex flex-wrap gap-6 justify-center text-muted-foreground">
           <div className="flex items-center gap-2">
-            <div className={cn("w-3 h-3 rounded border", monochrome ? "bg-slate-200 dark:bg-slate-700 border-slate-400" : "bg-blue-200 dark:bg-blue-800 border-blue-400")}></div>
+            <div className={cn("w-3 h-3 rounded border", monochrome ? "bg-muted border-border/80" : "bg-blue-200 dark:bg-blue-800 border-blue-400")}></div>
             <span>Theory (50 min)</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className={cn("w-3 h-3 rounded border", monochrome ? "bg-slate-200 dark:bg-slate-700 border-slate-400" : "bg-amber-200 dark:bg-amber-800 border-amber-400")}></div>
+            <div className={cn("w-3 h-3 rounded border", monochrome ? "bg-muted/80 border-border" : "bg-amber-200 dark:bg-amber-800 border-amber-400")}></div>
             <span>Lab (2hr 15min)</span>
           </div>
           <div className="flex items-center gap-2">
