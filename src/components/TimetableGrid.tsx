@@ -68,8 +68,8 @@ const SUBJECT_COLORS = [
 ];
 
 const LAB_COLORS = 'bg-amber-100 dark:bg-amber-900/40 border-amber-400 dark:border-amber-600';
-const MONO_COLOR = 'bg-muted border-border/80';
-const MONO_LAB = 'bg-muted/80 border-border';
+const MONO_COLOR = 'bg-card border-border';
+const MONO_LAB = 'bg-card border-border/80';
 
 // Break periods for visual display
 const BREAKS = [
@@ -651,11 +651,11 @@ export default function TimetableGrid({ timetable, batch, section, semester }: T
       <div className="mt-4 p-3 rounded-lg border border-border bg-card text-sm">
         <div className="flex flex-wrap gap-6 justify-center text-muted-foreground">
           <div className="flex items-center gap-2">
-            <div className={cn("w-3 h-3 rounded border", monochrome ? "bg-muted border-border/80" : "bg-blue-200 dark:bg-blue-800 border-blue-400")}></div>
+            <div className={cn("w-3 h-3 rounded border", monochrome ? "bg-card border-border" : "bg-blue-200 dark:bg-blue-800 border-blue-400")}></div>
             <span>Theory (50 min)</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className={cn("w-3 h-3 rounded border", monochrome ? "bg-muted/80 border-border" : "bg-amber-200 dark:bg-amber-800 border-amber-400")}></div>
+            <div className={cn("w-3 h-3 rounded border", monochrome ? "bg-card border-border/80" : "bg-amber-200 dark:bg-amber-800 border-amber-400")}></div>
             <span>Lab (2hr 15min)</span>
           </div>
           <div className="flex items-center gap-2">
