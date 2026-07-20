@@ -19,16 +19,15 @@ export async function GET() {
   
   for (const [batch, sections] of Object.entries(index.batches)) {
     for (const [section, semesters] of Object.entries(sections)) {
-      for (const semester of semesters) {
-        const timetable = loadTimetable(batch, section, semester);
-        if (timetable) {
-          timetables.push({
-            batch,
-            section,
-            semester,
-            timetable,
-          });
-        }
+      const latestSemester = semesters[semesters.length - 1];
+      const timetable = loadTimetable(batch, section, latestSemester);
+      if (timetable) {
+        timetables.push({
+          batch,
+          section,
+          semester: latestSemester,
+          timetable,
+        });
       }
     }
   }
