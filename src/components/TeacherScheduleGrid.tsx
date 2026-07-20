@@ -51,6 +51,8 @@ const CLASS_COLORS = [
 ];
 
 const LAB_COLORS = 'bg-amber-100 dark:bg-amber-900/40 border-amber-400 dark:border-amber-600 text-amber-800 dark:text-amber-200';
+const MONO_COLOR = 'bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300';
+const MONO_LAB = 'bg-slate-100 dark:bg-slate-800 border-slate-400 dark:border-slate-500 text-slate-700 dark:text-slate-300';
 
 interface ProcessedSlot extends FacultySlot {
   gridSpan: number;
@@ -75,12 +77,18 @@ export default function TeacherScheduleGrid({ schedule }: TeacherScheduleGridPro
       uniqueClasses.add(`${slot.batch}-${slot.section}-${slot.semester}`);
     }
     
-    Array.from(uniqueClasses).forEach((classId, index) => {
-      map.set(classId, CLASS_COLORS[index % CLASS_COLORS.length]);
-    });
+    if (monochrome) {
+      Array.from(uniqueClasses).forEach((classId) => {
+        map.set(classId, MONO_COLOR);
+      });
+    } else {
+      Array.from(uniqueClasses).forEach((classId, index) => {
+        map.set(classId, CLASS_COLORS[index % CLASS_COLORS.length]);
+      });
+    }
     
     return map;
-  }, [schedule.slots]);
+  }, [schedule.slots, monochrome]);
 
   // Process schedule into a grid format
   // Group slots by day and handle overlapping/spanning slots
@@ -111,7 +119,7 @@ export default function TeacherScheduleGrid({ schedule }: TeacherScheduleGridPro
         ...slot,
         gridSpan: endIdx - startIdx + 1,
         classLabel: formatClassLabel(slot.section, slot.semester),
-        colorClass: slot.isLab ? (monochrome ? 'bg-gray-100 dark:bg-gray-800 border-gray-400 dark:border-gray-500 text-gray-700 dark:text-gray-300' : LAB_COLORS) : classColorMap.get(classId) || CLASS_COLORS[0],
+        colorClass: slot.isLab ? (monochrome ? MONO_LAB : LAB_COLORS) : classColorMap.get(classId) || CLASS_COLORS[0],
       };
 
       // Add to the starting slot
@@ -170,7 +178,7 @@ export default function TeacherScheduleGrid({ schedule }: TeacherScheduleGridPro
       </div>
 
       {/* Schedule Grid */}
-      <div className={cn("border rounded-lg overflow-hidden", monochrome && "grayscale")}>
+      <div className="border rounded-lg overflow-hidden">
         {/* Header row with time slots */}
         <div className="grid grid-cols-[60px_repeat(7,1fr)] sm:grid-cols-[80px_repeat(7,1fr)] bg-muted/50 border-b">
           <div className="p-2 text-center text-xs font-medium text-muted-foreground border-r">
@@ -273,7 +281,7 @@ export default function TeacherScheduleGrid({ schedule }: TeacherScheduleGridPro
       {/* Legend */}
       <div className="flex flex-wrap gap-2 text-xs text-muted-foreground justify-center pt-2">
         <div className="flex items-center gap-1">
-          <div className={cn("w-3 h-3 rounded border", LAB_COLORS)} />
+          <div className={cn("w-3 h-3 rounded border", monochrome ? MONO_LAB : LAB_COLORS)} />
           <span>Lab Session</span>
         </div>
         <span className="text-muted-foreground/50">•</span>
