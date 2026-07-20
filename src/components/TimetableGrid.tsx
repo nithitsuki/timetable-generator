@@ -2,7 +2,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Timetable, DayOfWeek, parseSlotRef, resolveSlot } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import { Maximize2, Minimize2, Calendar, Check, Share2, ChevronDown, ChevronUp, Copy, Download, Link } from 'lucide-react';
+import { Maximize2, Minimize2, Calendar, Check, Share2, ChevronDown, ChevronUp, Copy, Download, Link, Palette } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -133,6 +133,9 @@ export default function TimetableGrid({ timetable, batch, section, semester }: T
   
   // Collapsible subjects card - default expanded on desktop, collapsed on mobile
   const [isSubjectsExpanded, setIsSubjectsExpanded] = useState(true);
+
+  // Monochrome mode toggle
+  const [monochrome, setMonochrome] = useState(false);
 
   // Set default based on screen size on mount
   useEffect(() => {
@@ -333,7 +336,7 @@ export default function TimetableGrid({ timetable, batch, section, semester }: T
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto">
+    <div className={cn("w-full max-w-6xl mx-auto", monochrome && "grayscale")}>
       {/* Toolbar row - all controls in one row */}
       <div className="mb-3 flex items-center gap-2">
         {/* Left side: View toggle (mobile only) */}
@@ -371,6 +374,18 @@ export default function TimetableGrid({ timetable, batch, section, semester }: T
         
         {/* Spacer when no config */}
         {Object.keys(timetable.config).length === 0 && <div className="flex-1" />}
+        
+        {/* Monochrome toggle */}
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setMonochrome(!monochrome)}
+          className={cn("h-9 w-9 sm:w-auto sm:px-3 p-0 sm:p-2", monochrome && "bg-muted")}
+          title={monochrome ? "Show colors" : "Show monochrome"}
+        >
+          <Palette className="h-4 w-4" />
+          <span className="hidden sm:inline ml-1.5">{monochrome ? "B&W" : "Color"}</span>
+        </Button>
         
         {/* Right side: Action buttons */}
         <div className="flex items-center gap-1.5 sm:gap-2">

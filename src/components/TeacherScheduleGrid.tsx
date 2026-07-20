@@ -1,9 +1,11 @@
 "use client";
-import { useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { FacultySchedule, FacultySlot, DayOfWeek } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
+import { Palette } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 // Days of the week (client-side constant)
 const DAYS: DayOfWeek[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
@@ -62,6 +64,8 @@ function formatClassLabel(section: string, semester: string): string {
 }
 
 export default function TeacherScheduleGrid({ schedule }: TeacherScheduleGridProps) {
+  const [monochrome, setMonochrome] = useState(false);
+
   // Create a color map for each unique class
   const classColorMap = useMemo(() => {
     const map = new Map<string, string>();
@@ -107,7 +111,7 @@ export default function TeacherScheduleGrid({ schedule }: TeacherScheduleGridPro
         ...slot,
         gridSpan: endIdx - startIdx + 1,
         classLabel: formatClassLabel(slot.section, slot.semester),
-        colorClass: slot.isLab ? LAB_COLORS : classColorMap.get(classId) || CLASS_COLORS[0],
+        colorClass: slot.isLab ? (monochrome ? 'bg-gray-100 dark:bg-gray-800 border-gray-400 dark:border-gray-500 text-gray-700 dark:text-gray-300' : LAB_COLORS) : classColorMap.get(classId) || CLASS_COLORS[0],
       };
 
       // Add to the starting slot
@@ -154,10 +158,19 @@ export default function TeacherScheduleGrid({ schedule }: TeacherScheduleGridPro
           ))}
           {schedule.subjects.length > 4 && <span className="text-muted-foreground">+{schedule.subjects.length - 4}</span>}
         </span>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setMonochrome(!monochrome)}
+          className={cn("h-6 px-1.5 ml-auto", monochrome && "bg-muted")}
+          title={monochrome ? "Show colors" : "Show monochrome"}
+        >
+          <Palette className="h-3.5 w-3.5" />
+        </Button>
       </div>
 
       {/* Schedule Grid */}
-      <div className="border rounded-lg overflow-hidden">
+      <div className={cn("border rounded-lg overflow-hidden", monochrome && "grayscale")}>
         {/* Header row with time slots */}
         <div className="grid grid-cols-[60px_repeat(7,1fr)] sm:grid-cols-[80px_repeat(7,1fr)] bg-muted/50 border-b">
           <div className="p-2 text-center text-xs font-medium text-muted-foreground border-r">
