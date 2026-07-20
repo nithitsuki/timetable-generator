@@ -38,3 +38,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Random junk
+Lab2_Qs4.docx
+*.png
+https_*
