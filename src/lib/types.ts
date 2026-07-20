@@ -113,8 +113,13 @@ export function resolveSlot(
   if ('choices' in slotDef && typeof slotDef.match === 'string') {
     const configKey = slotDef.match;
     const selectedValue = configSelections[configKey];
-    if (selectedValue && slotDef.choices[selectedValue]) {
-      return slotDef.choices[selectedValue];
+    if (selectedValue) {
+      if (slotDef.choices[selectedValue]) {
+        return slotDef.choices[selectedValue];
+      }
+      if (selectedValue.startsWith('__pe')) {
+        return selectedValue;
+      }
     }
     // No match found - return null (empty slot)
     return null;

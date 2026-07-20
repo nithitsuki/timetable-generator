@@ -368,6 +368,11 @@ export default function TimetableGrid({ timetable, batch, section, semester }: T
                       {v.label}
                     </option>
                   ))}
+                  {/^pe\d+$/i.test(key) && (
+                    <option value={`__${key}`}>
+                      PE{key.match(/\d+/)?.[0]}
+                    </option>
+                  )}
                 </select>
               </div>
             ))}
@@ -608,14 +613,16 @@ export default function TimetableGrid({ timetable, batch, section, semester }: T
                   const isEmpty = !slot.slotRef || slot.slotRef === 'FREE';
                   if (isEmpty) return null;
 
-                  const subject = slot.subjectKey ? timetable.subjects[slot.subjectKey] : null;
+                  const isPeLabel = slot.subjectKey?.startsWith('__pe');
+                  const peLabel = isPeLabel ? slot.subjectKey!.replace('__pe', 'PE') : null;
+                  const subject = !isPeLabel && slot.subjectKey ? timetable.subjects[slot.subjectKey] : null;
                   const left = timeToPercent(slot.startTime);
                   const right = timeToPercent(slot.endTime);
                   const width = right - left;
 
                   const colorClass = slot.isLab
                     ? (monochrome ? MONO_LAB : LAB_COLORS)
-                    : (slot.subjectKey ? subjectColorMap.get(slot.subjectKey) : '');
+                    : (slot.subjectKey ? subjectColorMap.get(isPeLabel ? 'SUBJECT_A' : slot.subjectKey) : '');
 
                   return (
                     <div
@@ -625,13 +632,13 @@ export default function TimetableGrid({ timetable, batch, section, semester }: T
                         colorClass
                       )}
                       style={{ left: `${left}%`, width: `${width}%` }}
-                      title={subject ? `${getElectiveLabel(slot.subjectKey!, timetable) || subject.name}\n${slot.startTime} - ${slot.endTime}` : ''}
+                      title={peLabel || (subject ? `${getElectiveLabel(slot.subjectKey!, timetable) || subject.name}\n${slot.startTime} - ${slot.endTime}` : '')}
                     >
                       <span className={cn(
                         "font-semibold text-foreground truncate px-1",
                         isCompactView ? "text-[8px]" : "text-xs sm:text-sm"
                       )}>
-                        {slot.subjectKey ? (getElectiveLabel(slot.subjectKey, timetable) || subject?.shortName || slot.slotRef) : slot.slotRef}
+                        {peLabel || (slot.subjectKey ? (getElectiveLabel(slot.subjectKey, timetable) || subject?.shortName || slot.slotRef) : slot.slotRef)}
                       </span>
                       {slot.isLab && !isCompactView && (
                         <span className={cn("text-[10px] px-1 py-0.5 rounded", monochrome ? "bg-muted-foreground/20 text-muted-foreground" : "bg-amber-200 dark:bg-amber-800 text-amber-900 dark:text-amber-100")}>
