@@ -262,7 +262,7 @@ export default function TeacherScheduleGrid({ schedule }: TeacherScheduleGridPro
                         )}
                       >
                         <span className="font-semibold text-[10px] sm:text-xs leading-tight">
-                          {slot.shortName}
+                          {slot.electiveLabel || slot.shortName}
                           {slot.isLab && <span className="text-[8px] ml-0.5">(L)</span>}
                         </span>
                         <span className="text-[8px] sm:text-[10px] opacity-75 leading-tight">

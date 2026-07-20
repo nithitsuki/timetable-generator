@@ -1,6 +1,6 @@
 "use client";
 import { useState, useMemo, useEffect } from 'react';
-import { Timetable, DayOfWeek, parseSlotRef, resolveSlot } from '@/lib/types';
+import { Timetable, DayOfWeek, parseSlotRef, resolveSlot, getElectiveLabel } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { Maximize2, Minimize2, Calendar, Check, Share2, ChevronDown, ChevronUp, Copy, Download, Link, Palette } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -625,13 +625,13 @@ export default function TimetableGrid({ timetable, batch, section, semester }: T
                         colorClass
                       )}
                       style={{ left: `${left}%`, width: `${width}%` }}
-                      title={subject ? `${subject.name}\n${slot.startTime} - ${slot.endTime}` : ''}
+                      title={subject ? `${getElectiveLabel(slot.subjectKey!, timetable) || subject.name}\n${slot.startTime} - ${slot.endTime}` : ''}
                     >
                       <span className={cn(
                         "font-semibold text-foreground truncate px-1",
                         isCompactView ? "text-[8px]" : "text-xs sm:text-sm"
                       )}>
-                        {subject?.shortName || slot.slotRef}
+                        {slot.subjectKey ? (getElectiveLabel(slot.subjectKey, timetable) || subject?.shortName || slot.slotRef) : slot.slotRef}
                       </span>
                       {slot.isLab && !isCompactView && (
                         <span className={cn("text-[10px] px-1 py-0.5 rounded", monochrome ? "bg-muted-foreground/20 text-muted-foreground" : "bg-amber-200 dark:bg-amber-800 text-amber-900 dark:text-amber-100")}>

@@ -152,6 +152,23 @@ export interface FacultySlot {
   // For labs that span multiple slots
   spanStart?: number;
   spanEnd?: number;
+  electiveLabel?: string;
+}
+
+export function getElectiveLabel(subjectKey: string, timetable: Timetable): string | null {
+  for (const slotDef of Object.values(timetable.slots)) {
+    if ('choices' in slotDef && typeof slotDef.match === 'string') {
+      const configKey = slotDef.match;
+      const m = configKey.match(/^pe(\d+)$/i);
+      if (!m) continue;
+      for (const choiceValue of Object.values(slotDef.choices)) {
+        if (parseSlotRef(choiceValue).subjectKey === subjectKey) {
+          return `PE${m[1]}`;
+        }
+      }
+    }
+  }
+  return null;
 }
 
 // Faculty member with their complete schedule

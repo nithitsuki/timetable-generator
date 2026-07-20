@@ -1,7 +1,7 @@
 // Client-side faculty utilities
 // These functions work with timetable data fetched from /api/timetables
 
-import { Timetable, DayOfWeek, parseSlotRef, FacultySlot, FacultySchedule, FacultySummary } from './types';
+import { Timetable, DayOfWeek, parseSlotRef, FacultySlot, FacultySchedule, FacultySummary, getElectiveLabel } from './types';
 
 // Days of the week
 export const DAYS: DayOfWeek[] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
@@ -165,6 +165,7 @@ export function buildFacultySchedule(
             semester,
             spanStart: i,
             spanEnd: i + span - 1,
+            electiveLabel: getElectiveLabel(subjectKey, timetable) ?? undefined,
           });
           
           i += span;
@@ -203,6 +204,7 @@ export function buildFacultySchedule(
                   semester,
                   spanStart: i,
                   spanEnd: i + span - 1,
+                  electiveLabel: getElectiveLabel(choiceKey, timetable) ?? undefined,
                 });
                 
                 i += span - 1;
@@ -240,6 +242,7 @@ export function buildFacultySchedule(
                   semester,
                   spanStart: i,
                   spanEnd: i + span - 1,
+                  electiveLabel: getElectiveLabel(choiceKey, timetable) ?? undefined,
                 });
                 
                 i += span - 1;
